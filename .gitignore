@@ -1,0 +1,11 @@
+kompilator/Kompilator.opensdf
+*.o
+compiler
+Kompilator.opensdf
+lexer.yy.cc
+parser.output
+parser.tab.cc
+parser.tab.hh
+stack.hh
+test.mr
+.vs

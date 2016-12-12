@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8B07E37A-F7ED-4C0E-AB30-0D63C70F2D2F}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>make</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean &amp;&amp; make</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath>C:\Projekty\2015\JFTT\lab\kompilator\gtest-1.7.0\include\;C:\Programy\flex-2.6.0\src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>make</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean &amp;&amp; make</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <IncludePath>C:\Projekty\2015\JFTT\lab\kompilator\gtest-1.7.0\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Projekty\2015\JFTT\lab\kompilator\gtest-1.7.0\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Projekty\2015\JFTT\lab\kompilator\gtest-1.7.0\include\;C:\Programy\flex-2.6.0\src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CodeBlock.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandAssign.cpp" />
+    <ClCompile Include="CommandDummy.cpp" />
+    <ClCompile Include="CommandFor.cpp" />
+    <ClCompile Include="CommandGet.cpp" />
+    <ClCompile Include="CommandIfElse.cpp" />
+    <ClCompile Include="CommandPut.cpp" />
+    <ClCompile Include="CommandWhile.cpp" />
+    <ClCompile Include="Condition.cpp" />
+    <ClCompile Include="driver.cpp" />
+    <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="ExpressionIdentifier.cpp" />
+    <ClCompile Include="ExpressionNumber.cpp" />
+    <ClCompile Include="ExpressionOperation.cpp" />
+    <ClCompile Include="GebalaCompiler.cpp" />
+    <ClCompile Include="gtest-1.7.0\codegear\gtest_all.cc" />
+    <ClCompile Include="gtest-1.7.0\codegear\gtest_link.cc" />
+    <ClCompile Include="gtest-1.7.0\fused-src\gtest\gtest-all.cc" />
+    <ClCompile Include="gtest-1.7.0\fused-src\gtest\gtest_main.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample1.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample10_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample1_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample2.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample2_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample3_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample4.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample4_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample5_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample6_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample7_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample8_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\samples\sample9_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-all.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-death-test.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-filepath.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-port.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-printers.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-test-part.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest-typed-test.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest.cc" />
+    <ClCompile Include="gtest-1.7.0\src\gtest_main.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-death-test_ex_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-death-test_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-filepath_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-linked_ptr_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-listener_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-message_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-options_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-param-test2_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-param-test_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-port_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-printers_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-test-part_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-tuple_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-typed-test2_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-typed-test_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest-unittest-api_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_all_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_break_on_failure_unittest_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_catch_exceptions_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_color_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_environment_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_env_var_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_filter_unittest_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_help_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_list_tests_unittest_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_main_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_no_test_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_output_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_pred_impl_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_premature_exit_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_prod_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_repeat_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_shuffle_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_sole_header_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_stress_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_throw_on_failure_ex_test.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_throw_on_failure_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_uninitialized_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_unittest.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_xml_outfile1_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_xml_outfile2_test_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\gtest_xml_output_unittest_.cc" />
+    <ClCompile Include="gtest-1.7.0\test\production.cc" />
+    <ClCompile Include="Identifier.cpp" />
+    <ClCompile Include="InfInt.cpp" />
+    <ClCompile Include="lexer.yy.cc" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CodeBlock.hpp" />
+    <ClInclude Include="Command.hpp" />
+    <ClInclude Include="CommandAssign.hpp" />
+    <ClInclude Include="CommandDummy.hpp" />
+    <ClInclude Include="CommandFor.hpp" />
+    <ClInclude Include="CommandGet.hpp" />
+    <ClInclude Include="CommandIfElse.hpp" />
+    <ClInclude Include="CommandPut.hpp" />
+    <ClInclude Include="CommandWhile.hpp" />
+    <ClInclude Include="Condition.hpp" />
+    <ClInclude Include="driver.hpp" />
+    <ClInclude Include="Expression.hpp" />
+    <ClInclude Include="ExpressionIdentifier.hpp" />
+    <ClInclude Include="ExpressionNumber.hpp" />
+    <ClInclude Include="ExpressionOperation.hpp" />
+    <ClInclude Include="GebalaCompiler.hpp" />
+    <ClInclude Include="gtest-1.7.0\build-aux\config.h" />
+    <ClInclude Include="gtest-1.7.0\fused-src\gtest\gtest.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-death-test.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-message.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-param-test.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-printers.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-spi.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-test-part.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest-typed-test.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest_pred_impl.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\gtest_prod.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-death-test-internal.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-filepath.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-internal.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-linked_ptr.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-param-util-generated.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-param-util.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-port.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-string.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-tuple.h" />
+    <ClInclude Include="gtest-1.7.0\include\gtest\internal\gtest-type-util.h" />
+    <ClInclude Include="gtest-1.7.0\samples\prime_tables.h" />
+    <ClInclude Include="gtest-1.7.0\samples\sample1.h" />
+    <ClInclude Include="gtest-1.7.0\samples\sample2.h" />
+    <ClInclude Include="gtest-1.7.0\samples\sample3-inl.h" />
+    <ClInclude Include="gtest-1.7.0\samples\sample4.h" />
+    <ClInclude Include="gtest-1.7.0\src\gtest-internal-inl.h" />
+    <ClInclude Include="gtest-1.7.0\test\gtest-param-test_test.h" />
+    <ClInclude Include="gtest-1.7.0\test\gtest-typed-test_test.h" />
+    <ClInclude Include="gtest-1.7.0\test\production.h" />
+    <ClInclude Include="gtest-1.7.0\xcode\samples\frameworksample\widget.h" />
+    <ClInclude Include="Identifier.hpp" />
+    <ClInclude Include="InfInt.h" />
+    <ClInclude Include="Number.hpp" />
+    <ClInclude Include="scanner.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lexer.l" />
+    <None Include="parser.yy" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
