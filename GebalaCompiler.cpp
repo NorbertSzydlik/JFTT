@@ -4,6 +4,8 @@
 #include <iostream>
 #include <map>
 
+#include "Number.hpp"
+
 GebalaCompiler::GebalaCompiler()
 {
 }
@@ -18,6 +20,7 @@ std::string GebalaCompiler::compile(std::string input) {
 	input = trimLines(input);
 	input = compileCommands(input);
 	input = replaceLabelsWithLines(input);
+	input = fixRegisterNames(input);
 	input = addHalt(input);
 	return input;
 }
@@ -122,8 +125,45 @@ std::string GebalaCompiler::compileCommand(std::string input)
 	{
 		auto registerNumber = getRegexNumber(match[2]);
 		const auto constToSet = Number(match[3]);
+
 		compiled << "ZERO " << registerNumber << "\n";
-		sconstToSet.numberOfDigits();
+
+		if(constToSet != 0)
+		{
+			const auto digitsNumber = constToSet.numberOfDigits();
+			std::vector<char> digits(digitsNumber, '0');
+
+			//copy digits to vector
+			for(auto i = decltype(digitsNumber){0}; i < digitsNumber; ++i)
+			{
+				digits[i] = constToSet.digitAt(i);
+			}
+
+			bool mostSignificantBitFound = false;
+			for(auto& c : digits)
+			{
+				//find first bit if not found yet
+				auto i = 1 << 7;
+				while(!mostSignificantBitFound && i > 0)
+				{
+					if((i & c) > 0) {
+						mostSignificantBitFound = true;
+						compiled << "INC " << registerNumber << "\n";
+					}
+					i >>= 1;
+				}
+				for(; i > 0; i >>= 1)
+				{
+					compiled << "SHL " << registerNumber << "\n";
+
+					//if there is one on position, increment
+					if((i & c) > 0)
+					{
+						compiled << "INC " << registerNumber << "\n";
+					}
+				}
+			}
+		}
 	}
 	else {
 		compiled << input << "\n";
@@ -167,18 +207,25 @@ std::string GebalaCompiler::replaceLabelsWithLines(std::string input)
 
 	istream = std::istringstream(compiled.str());
 	compiled = std::ostringstream();
-	std::regex isLabelInCommand("(.*)[@](\\S+)");
+	std::regex isLabelInCommand("(.*) [@](\\S+)");
 
 	while (std::getline(istream, line)) {
 		std::smatch m;
 		if (std::regex_match(line, m, isLabelInCommand)) {
 			auto labelLine = labelToLineNum[m[2]];
-			line = std::regex_replace (line, isLabelInCommand, std::string("$1 ") + std::to_string(labelLine) );
+			line = std::regex_replace(line, isLabelInCommand, std::string("$1 ") + std::to_string(labelLine) );
 		}
 		compiled << line << "\n";
 	}
 
 	return compiled.str();
+}
+
+std::string GebalaCompiler::fixRegisterNames(std::string input)
+{
+	std::regex e("%r");   // matches words beginning by "sub"
+  // using string/c-string (3) version:
+  return std::regex_replace (input, e, "");
 }
 
 std::string GebalaCompiler::addHalt(std::string input)

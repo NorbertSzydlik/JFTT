@@ -14,7 +14,6 @@ int main(const int argc, const char **argv)
 	std::ofstream compiled(argv[2]);
 	std::string sourceString((std::istreambuf_iterator<char>(source)),
 		std::istreambuf_iterator<char>());
-	std::cout << sourceString << std::endl;
 
 	driver.parse(sourceString);
 	driver.compile(compiled) << "\n";

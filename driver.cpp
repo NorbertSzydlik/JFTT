@@ -19,6 +19,8 @@ Calculator::Driver::~Driver(){
 
 void Calculator::Driver::parse( std::string input )
 {
+  std::cout << input << std::endl;
+
    std::istringstream inputStream(input);
    m_errorStream.str("");
 
@@ -64,6 +66,7 @@ std::string Calculator::Driver::getError() const
 }
 
 void Calculator::Driver::setCommands(CommandPtrs const & commands) {
+  std::cout << "Set commands: " << commands.size() << std::endl;
 	m_commands = commands;
 }
 
@@ -74,7 +77,9 @@ bool Calculator::Driver::isError() const
 
 CodeBlockPtr Calculator::Driver::compileToBlock() {
 	CodeBlockPtr codeBlock = std::make_shared<CodeBlock>();
+  std::cout << m_commands.size() << std::endl;
 	for (CommandPtr cmd : m_commands) {
+    std::cout << cmd->getCommandName() << std::endl;
 		codeBlock->addBlock(cmd->getCodeBlock(*this));
 	}
 	return codeBlock;

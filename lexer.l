@@ -1,7 +1,7 @@
 %{
 /* C++ string header, for string ops below */
 #include <string>
-/* Implementation of yyFlexScanner */ 
+/* Implementation of yyFlexScanner */
 #include "scanner.hpp"
 
 /* typedef to make the returns for the tokens shorter */
@@ -18,10 +18,10 @@ using token=Calculator::Parser::token;
 
 %}
 
-%option debug 
-%option nodefault 
-%option yyclass="Calculator::Scanner" 
-%option noyywrap 
+%option debug
+%option nodefault
+%option yyclass="Calculator::Scanner"
+%option noyywrap
 %option c++
 
 %x comment Error
@@ -32,7 +32,6 @@ using token=Calculator::Parser::token;
 <comment>.
 
 <INITIAL>"ENDWHILE" { return token::ENDWHILE; }
-<INITIAL>"DECLARE" { return token::DECLARE; }
 <INITIAL>"ENDFOR" { return token::ENDFOR; }
 <INITIAL>"WHILE" { return token::WHILE; }
 <INITIAL>"ENDIF" { return token::ENDIF; }
@@ -40,19 +39,22 @@ using token=Calculator::Parser::token;
 <INITIAL>"FROM" { return token::FROM; }
 <INITIAL>"THEN" { return token::THEN; }
 <INITIAL>"ELSE" { return token::ELSE; }
-<INITIAL>"GET" { return token::GET; }
-<INITIAL>"PUT" { return token::PUT; }
+<INITIAL>"READ" { return token::GET; }
+<INITIAL>"WRITE" { return token::PUT; }
 <INITIAL>"FOR" { return token::FOR; }
-<INITIAL>"END" { return token::END; }
-<INITIAL>"IN" { return token::IN; }
 <INITIAL>"DO" { return token::DO; }
 <INITIAL>"TO" { return token::TO; }
 <INITIAL>"IF" { return token::IF; }
+<INITIAL>"SKIP" { return token::SKIP; }
+
+<INITIAL>"VAR" { return token::DECLARE; }
+<INITIAL>"BEGIN" { return token::IN; }
+<INITIAL>"END" { return token::END; }
 
 
 <INITIAL>[_a-zA-Z]+ { yylval->build<std::string>() = yytext; return token::PIDENTIFIER; }
 <INITIAL>[0-9]+ { yylval->build<Number>() = std::stoul(yytext); return token::NUMBER; }
-			
+
 <INITIAL>":=" { return token::OP_ASSIGN; }
 <INITIAL>"+"  { return token::OP_ADD; }
 <INITIAL>"-"  { return token::OP_MINUS; }
@@ -77,5 +79,3 @@ using token=Calculator::Parser::token;
 
 <<EOF>>  { return token::EOF_TOKEN; }
 %%
-
-

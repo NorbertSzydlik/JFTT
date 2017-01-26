@@ -10,12 +10,12 @@ CXXDEBUG = -g -Wall
 CSTD = -std=c99
 CXXSTD = -std=c++14
 
-CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
-CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD) -v -I./gtest-1.7.0/include -pthread
+CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD)
+CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD) -v -I. -I./gtest-1.7.0/include -pthread
 
 MAIN_CPPOBJ = driver Command CommandWhile CommandFor CommandIfElse CommandPut CommandGet CommandDummy CommandAssign Identifier Expression ExpressionNumber ExpressionIdentifier ExpressionOperation InfInt CodeBlock Condition GebalaCompiler
 CPPOBJ = main $(MAIN_CPPOBJ)
-TESTOBJ = main_test $(MAIN_CPPOBJ)
+TESTOBJ = main_test tests/interpreter tests/test_Assignment $(MAIN_CPPOBJ)
 SOBJ =  parser lexer
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
@@ -39,7 +39,6 @@ wc: $(FILES)
 	$(MAKE) $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
 
-
 parser: parser.yy
 	bison -d -v parser.yy
 	$(CXX) $(CXXFLAGS) -c -o parser.o parser.tab.cc
@@ -51,9 +50,8 @@ lexer: lexer.l
 test: $(TEST_FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(TESTOBJS)
-	$(CXX) $(CXXFLAGS) -o test $(TESTOBJS) parser.o lexer.o -I./gtest-1.7.0/include -L./gtest-1.7.0/lib/.libs -lgtest $(LIBS)
+	$(CXX) $(CXXFLAGS) -o test $(TESTOBJS) parser.o lexer.o -I./gtest-1.7.0/include -L./gtest-1.7.0/lib/.libs -rpath ./gtest-1.7.0/lib/.libs -lgtest -lcln $(LIBS)
 
 .PHONY: clean
 clean:
 	rm -rf $(CLEANLIST)
-

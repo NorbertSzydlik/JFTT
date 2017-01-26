@@ -1,7 +1,7 @@
 %skeleton "lalr1.cc"
 %require  "3.0"
-%debug 
-%defines 
+%debug
+%defines
 %define api.namespace {Calculator}
 %define parser_class_name {Parser}
 %define api.value.type variant
@@ -56,7 +56,7 @@
 }
 
 
-%token DECLARE IN END IF THEN ELSE ENDIF WHILE DO ENDWHILE FOR DOWN FROM TO ENDFOR GET PUT
+%token DECLARE IN END IF THEN ELSE ENDIF WHILE DO ENDWHILE FOR DOWN FROM TO ENDFOR GET PUT SKIP
 %token EOF_TOKEN
 
 %token OP_ASSIGN
@@ -100,7 +100,7 @@ command: identifier OP_ASSIGN expression SEMICOLON { $$ = std::make_shared<Comma
 	| IF condition THEN commands ELSE commands ENDIF { $$ = std::make_shared<CommandIfElse>($2, $4, $6); }
 
 	| WHILE condition DO commands ENDWHILE { $$ = std::make_shared<CommandWhile>($2, $4); }
-	
+
 	| FOR PIDENTIFIER FROM NUMBER TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8);}
 	| FOR PIDENTIFIER FROM identifier TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
 	| FOR PIDENTIFIER FROM NUMBER TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
@@ -113,6 +113,7 @@ command: identifier OP_ASSIGN expression SEMICOLON { $$ = std::make_shared<Comma
 	| GET identifier SEMICOLON { $$ = std::make_shared<CommandGet>($2); }
 	| PUT identifier SEMICOLON { $$ = std::make_shared<CommandPut>($2); }
 	| PUT NUMBER SEMICOLON { $$ = std::make_shared<CommandPut>($2); }
+  | SKIP SEMICOLON {}
 
 expression: NUMBER { $$ = std::make_shared<ExpressionNumber>($1);}
     | identifier { $$ = std::make_shared<ExpressionIdentifier>($1); }

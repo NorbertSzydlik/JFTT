@@ -3,6 +3,8 @@
 
 CommandAssign::CommandAssign(IdentifierPtr const & identifier, ExpressionPtr const & expression)
 {
+	std::cout << __FUNCTION__ << std::endl;
+	
 	m_identifier = identifier;
 	m_expression = expression;
 }
@@ -13,6 +15,7 @@ CommandAssign::~CommandAssign()
 }
 
 std::string CommandAssign::compile(Calculator::Driver & driver) {
+	std::cout << "compile CommandAssign" << std::endl;
 	return getCodeBlock(driver)->getRaw();
 }
 
