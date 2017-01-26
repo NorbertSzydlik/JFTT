@@ -39,10 +39,11 @@ END
   auto compiled = compile(program);
 
   std::istringstream compiledFile(compiled);
+  std::ostringstream stdOut;
   std::istringstream stdIn;
 //std::ostream& out, std::istream& programStdIn, std::ostream& programStdOut
   std::ostringstream programOutput;
-  auto result = interpret(compiledFile, std::cout, stdIn, programOutput);
+  auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
 
   ASSERT_GT(result, 0);
   ASSERT_EQ(programOutput.str(), "1\n");
