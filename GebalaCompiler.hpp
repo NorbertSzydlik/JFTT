@@ -14,4 +14,6 @@ protected:
 	static std::string compileCommands(std::string input);
 	static std::string compileCommand(std::string input);
 	static std::string getRegexNumber(std::string input);
+	static std::string replaceLabelsWithLines(std::string input);
+	static std::string addHalt(std::string input);
 };

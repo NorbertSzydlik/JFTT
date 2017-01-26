@@ -1,3 +1,5 @@
+#include <algorithm>
+#include "driver.hpp"
 #include "ExpressionOperation.hpp"
 
 ExpressionOperation::ExpressionOperation(Type type, IdentifierPtr leftIdentifier, IdentifierPtr rightIdentifier) :
@@ -36,7 +38,7 @@ ExpressionOperation::~ExpressionOperation()
 {
 }
 
-std::string ExpressionOperation::evaluateToRegister(Calculator::Driver & driver, unsigned int registerNumber)
+std::string ExpressionOperation::evaluateToRegister(Calculator::Driver& driver, unsigned int registerNumber)
 {
 	std::ostringstream compiled;
 
@@ -51,23 +53,46 @@ std::string ExpressionOperation::evaluateToRegister(Calculator::Driver & driver,
 
 	compiled << "#begin of expression " << command << "\n";
 
-	unsigned int tmpRegister = registerNumber == 1 ? 0 : 1;
+	if(m_operands == Operands::IDENTIFIER_IDENTIFIER)
+	{
+		compiled << m_rightIdentifier->loadPositionToRegister(driver, 0);
+		compiled << m_leftIdentifier->loadPositionToRegister(driver, registerNumber);
 
-	if (m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::IDENTIFIER_NUMBER) {
-		compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
+		compiled << command << " %r" << registerNumber << " #execute operation in expression\n";
 	}
-	else {
-		compiled << "LOAD %r" << registerNumber << " " << m_leftNumber << "\n";
-	}
+	else if(m_operands == Operands::NUMBER_IDENTIFIER)
+	{
+		compiled << m_rightIdentifier->loadPositionToRegister(driver, 0);
+		compiled << "SET %r" << registerNumber << " " << m_leftNumber << "\n";
 
-	if (m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::NUMBER_IDENTIFIER) {
-		compiled << m_rightIdentifier->loadToRegister(driver, tmpRegister);
+		compiled << command << " %r" << registerNumber << " #execute operation in expression\n";
 	}
-	else {
-		compiled << "LOAD %r" << tmpRegister << " " << m_rightNumber << "\n";
-	}
+	else if(m_operands == Operands::IDENTIFIER_NUMBER)
+	{
+		compiled << "#prepare temporary memory allocation for const number on right side of evaluation\n";
+		compiled << "SET %r0 " << driver.getTmpMemoryPosition() << " #temporary memory position\n";
+		compiled << "SET %r" << registerNumber << " " << m_rightNumber << " #divide by " << m_rightNumber << "\n";
+		compiled << "STORE " << registerNumber << "\n";
 
-	compiled << command << " %r" << registerNumber << " %r" << tmpRegister << " #execute operation in expression\n";
+		compiled << m_leftIdentifier->loadPositionToRegister(driver, registerNumber);
+
+		compiled << command << " %r" << registerNumber << " #execute operation in expression\n";
+	}
+	else if(m_operands == Operands::NUMBER_NUMBER)
+	{
+		compiled << "SET %r" << registerNumber << " " << evaluateConstNumbers() << "\n";
+	}
 
 	return compiled.str();
+}
+
+Number ExpressionOperation::evaluateConstNumbers()
+{
+	switch (m_type) {
+	case Type::OP_ADD: return m_leftNumber + m_rightNumber;
+	case Type::OP_SUB: return std::max(m_leftNumber - m_rightNumber, Number(0));
+	case Type::OP_MUL: return m_leftNumber * m_rightNumber;
+	case Type::OP_DIV: return m_rightNumber != 0 ? m_leftNumber / m_rightNumber : 0;
+	case Type::OP_MOD: return m_rightNumber != 0 ? m_leftNumber % m_rightNumber : 0;
+	}
 }

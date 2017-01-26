@@ -21,10 +21,10 @@ public:
    virtual ~Driver();
 
    void parse( std::string input );
-  
+
    double getResult() const;
    void setResult(double result);
-   
+
    void addError(std::string const & error);
    std::string getError() const;
    bool isError() const;
@@ -41,13 +41,14 @@ public:
    void undeclare(std::string identifierName);
 
    Number getDeclarationPosition(std::string identifierName);
+   Number getTmpMemoryPosition();
 protected:
 	bool doesDeclarationExist(std::string identifierName);
 private:
    std::stringstream m_errorStream;
 
    CommandPtrs m_commands;
-   
+
    Calculator::Parser *parser;
    Calculator::Scanner *scanner;
    std::unordered_map<std::string, unsigned long> m_lastLabelNumbers;
@@ -56,4 +57,3 @@ private:
 };
 
 } /* end namespace Calculator */
-

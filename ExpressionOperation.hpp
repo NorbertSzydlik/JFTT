@@ -23,6 +23,7 @@ public:
 	std::string evaluateToRegister(Calculator::Driver& driver, unsigned int registerNumber) override;
 
 private:
+	Number evaluateConstNumbers();
 	enum class Operands {
 		IDENTIFIER_IDENTIFIER,
 		IDENTIFIER_NUMBER,
@@ -36,4 +37,3 @@ private:
 	Number m_leftNumber;
 	Number m_rightNumber;
 };
-

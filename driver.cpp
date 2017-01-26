@@ -10,7 +10,7 @@
 #include "CodeBlock.hpp"
 #include "GebalaCompiler.hpp"
 
-Calculator::Driver::~Driver(){ 
+Calculator::Driver::~Driver(){
    delete(scanner);
    scanner = nullptr;
    delete(parser);
@@ -24,7 +24,7 @@ void Calculator::Driver::parse( std::string input )
 
    m_lastLabelNumbers.clear();
    m_lastMemoryAddress = 0;
-   
+
    delete(scanner);
    try
    {
@@ -36,20 +36,20 @@ void Calculator::Driver::parse( std::string input )
             ba.what() << ")\n";
 	    return;
    }
-   
-   delete(parser); 
+
+   delete(parser);
    try
    {
-      parser = new Calculator::Parser( (*scanner) /* scanner */, 
+      parser = new Calculator::Parser( (*scanner) /* scanner */,
                                   (*this) /* driver */ );
    }
    catch( std::bad_alloc &ba )
    {
-        m_errorStream << "Failed to allocate parser: (" << 
+        m_errorStream << "Failed to allocate parser: (" <<
             ba.what() << "\n";
 		return;
    }
-   
+
    parser->parse();
 }
 
@@ -137,4 +137,9 @@ void Calculator::Driver::declare(std::string identifierName, Number size) {
 	m_declaredVariables[identifierName] = m_lastMemoryAddress;
 	std::cout << "declare: " << identifierName << " with size: " << size << " @ " << m_lastMemoryAddress << std::endl;
 	m_lastMemoryAddress += size;
+}
+
+Number Calculator::Driver::getTmpMemoryPosition()
+{
+  return m_lastMemoryAddress + 1;
 }

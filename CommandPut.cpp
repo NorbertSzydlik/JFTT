@@ -18,12 +18,12 @@ std::string CommandPut::compile(Calculator::Driver & driver) {
 	std::ostringstream compiled;
 	std::cout << "test: put: " << m_isConst << " " << m_number << std::endl;
 	if (m_isConst) {
-		compiled << "LOAD %r0 " << m_number << "\n";
-		compiled << "WRITE %r0\n";
+		compiled << "SET %r1 " << m_number << "\n";
+		compiled << "PUT %r1\n";
 	}
 	else {
-		compiled << m_identifier->loadToRegister(driver, 0);
-		compiled << "WRITE %r0\n";
+		compiled << m_identifier->loadToRegister(driver, 1);
+		compiled << "PUT %r1\n";
 	}
 
 	return compiled.str();

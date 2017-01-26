@@ -1,6 +1,10 @@
 #include "CommandIfElse.hpp"
 #include "driver.hpp"
 
+const unsigned int WORK_REGISTER = 1;
+const unsigned int TMP_REGISTER = 2;
+
+
 CommandIfElse::CommandIfElse(ConditionPtr condition, CommandPtrs const & ifCommands, CommandPtrs const & elseCommands)
 {
 	m_condition = condition;
@@ -27,9 +31,9 @@ std::string CommandIfElse::compile(Calculator::Driver & driver) {
 
 	compiled << "#if-else block\n";
 
-	compiled << m_condition->evaluate(driver, 0);
+	compiled << m_condition->evaluate(driver, WORK_REGISTER, TMP_REGISTER);
 
-	compiled << "JZERO %r0 @" << elseLabel << " #jump to else label when condition is false\n";
+	compiled << "JZERO %r" << WORK_REGISTER << " @" << elseLabel << " #jump to else label when condition is false\n";
 	compiled << "#if part\n";
 	for (auto& cmd : m_ifCommands) {
 		std::cout << "test: if-else(if): before: " << cmd->getCommandName() << std::endl;

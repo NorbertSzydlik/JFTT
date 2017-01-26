@@ -11,8 +11,11 @@ CommandGet::~CommandGet()
 
 std::string CommandGet::compile(Calculator::Driver & driver) {
 	std::ostringstream compiled;
-	compiled << "READ 1\n";
-	compiled << "#TODO STORE to identifier: " << m_identifier << "\n";
+
+	compiled << "GET 1\n";
+	compiled << m_identifier->loadPositionToRegister(driver, 0);
+	compiled << "STORE 1\n";
+
 	return compiled.str();
 }
 

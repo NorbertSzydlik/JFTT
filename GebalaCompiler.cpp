@@ -2,6 +2,7 @@
 #include <regex>
 #include <sstream>
 #include <iostream>
+#include <map>
 
 GebalaCompiler::GebalaCompiler()
 {
@@ -16,6 +17,8 @@ std::string GebalaCompiler::compile(std::string input) {
 	input = removeEmptyLines(input);
 	input = trimLines(input);
 	input = compileCommands(input);
+	input = replaceLabelsWithLines(input);
+	input = addHalt(input);
 	return input;
 }
 
@@ -73,7 +76,6 @@ std::string GebalaCompiler::compileCommands(std::string input)
 	std::ostringstream compiled;
 	std::string line;
 
-
 	std::regex isLabel("\\S+\\s*:");
 
 	while (std::getline(istream, line)) {
@@ -98,7 +100,7 @@ std::string GebalaCompiler::compileCommand(std::string input)
 	std::smatch match;
 
 	std::ostringstream compiled;
-	
+
 	std::regex_match(input, match, cmdRegex);
 
 	const std::string cmd = match[1];
@@ -116,6 +118,13 @@ std::string GebalaCompiler::compileCommand(std::string input)
 	else if (cmd == "ADD" || cmd == "SUB") {
 		compiled << cmd << " " << getRegexNumber(match[2]) << " " << getRegexNumber(match[3]) << "\n";
 	}
+	else if (cmd == "SET")
+	{
+		auto registerNumber = getRegexNumber(match[2]);
+		const auto constToSet = Number(match[3]);
+		compiled << "ZERO " << registerNumber << "\n";
+		sconstToSet.numberOfDigits();
+	}
 	else {
 		compiled << input << "\n";
 	}
@@ -132,4 +141,47 @@ std::string GebalaCompiler::getRegexNumber(std::string input)
 	}
 
 	return match[1];
+}
+
+std::string GebalaCompiler::replaceLabelsWithLines(std::string input)
+{
+	std::istringstream istream(input);
+	std::ostringstream compiled;
+	std::string line;
+
+	std::regex isLabel("(\\S+)\\s*:");
+	unsigned int lineNum = 0;
+
+  std::map<std::string, unsigned int> labelToLineNum;
+
+	while (std::getline(istream, line)) {
+		std::smatch m;
+		if (std::regex_match(line, m, isLabel)) {
+			labelToLineNum.insert(std::make_pair(m[1], lineNum));
+		}
+		else {
+			compiled << line << "\n";
+			++lineNum;
+		}
+	}
+
+	istream = std::istringstream(compiled.str());
+	compiled = std::ostringstream();
+	std::regex isLabelInCommand("(.*)[@](\\S+)");
+
+	while (std::getline(istream, line)) {
+		std::smatch m;
+		if (std::regex_match(line, m, isLabelInCommand)) {
+			auto labelLine = labelToLineNum[m[2]];
+			line = std::regex_replace (line, isLabelInCommand, std::string("$1 ") + std::to_string(labelLine) );
+		}
+		compiled << line << "\n";
+	}
+
+	return compiled.str();
+}
+
+std::string GebalaCompiler::addHalt(std::string input)
+{
+	return input + "HALT";
 }

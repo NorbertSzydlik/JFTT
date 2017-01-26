@@ -2,6 +2,8 @@
 #include "Identifier.hpp"
 #include "driver.hpp"
 
+const unsigned int ADDRESS_REGISTER = 0;
+
 Identifier::Identifier(std::string name, Number offset)
 {
 	m_name = name;
@@ -27,9 +29,9 @@ const std::string Identifier::getName() {
 const std::string Identifier::loadToRegister(Calculator::Driver & driver, unsigned int registerNumber)
 {
 	std::ostringstream compiled;
-	compiled << loadPositionToRegister(driver, registerNumber);
-	compiled << "LOAD %r" << registerNumber << " %r" << registerNumber << " #load value from memory pointed by the same register\n";
-	
+	compiled << loadPositionToRegister(driver, ADDRESS_REGISTER);
+	compiled << "LOAD %r" << registerNumber << " #load value from memory pointed by address register\n";
+
 	return compiled.str();
 }
 
@@ -40,15 +42,16 @@ const std::string Identifier::loadPositionToRegister(Calculator::Driver & driver
 	if (isConstOffset()) {
 		position = driver.getDeclarationPosition(m_name);
 		position += m_offset;
-		compiled << "LOAD %r" << registerNumber << " " << position << " #memory position of identifier " << m_name << "\n";
+		compiled << "SET %r" << registerNumber << " " << position << " #memory position of identifier " << m_name << "\n";
 	}
 	else {
 		position = driver.getDeclarationPosition(m_name);
-		unsigned int tmpRegister = registerNumber == 1 ? 2 : 1;
 		auto offsetPosition = driver.getDeclarationPosition(m_offsetIdentifierName);
-		compiled << "LOAD %r" << registerNumber << " " << position << " #load start position of identifier " << m_name << "\n";
-		compiled << "LOAD %r" << tmpRegister << " $" << offsetPosition << " #load offset from memory pointed by offset identifier " << m_offsetIdentifierName << "\n";
-		compiled << "ADD %r" << registerNumber << " %r" << tmpRegister << " #memory position of identifier " << m_name << "(" << m_offsetIdentifierName << ")\n";
+
+		compiled << "SET %r0 " << offsetPosition << "\n";
+		compiled << "SET %r" << registerNumber << " " << position << "\n";
+		compiled << "ADD %r" << registerNumber << "\n";
+
 	}
 	return compiled.str();
 }

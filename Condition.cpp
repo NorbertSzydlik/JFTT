@@ -37,7 +37,8 @@ Condition::~Condition()
 {
 }
 
-std::string Condition::evaluate(Calculator::Driver& driver, unsigned int registerNumber) {
+std::string Condition::evaluate(Calculator::Driver& driver, unsigned int registerNumber, unsigned int tmpRegister)
+{
 	std::ostringstream compiled;
 
 	std::string command;
@@ -51,20 +52,20 @@ std::string Condition::evaluate(Calculator::Driver& driver, unsigned int registe
 	compiled << "#begin of condition " << command << "\n";
 
 	if (m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::IDENTIFIER_NUMBER) {
-		compiled << m_leftIdentifier->loadToRegister(driver, 0);
+		compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
 	}
 	else {
-		compiled << "LOAD %r0 " << m_leftNumber << "\n";
+		compiled << "SET %r" << registerNumber << " " << m_leftNumber << " #left number is constant\n";
 	}
 
 	if (m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::NUMBER_IDENTIFIER) {
-		compiled << m_rightIdentifier->loadToRegister(driver, 1);
+		compiled << m_rightIdentifier->loadToRegister(driver, tmpRegister);
 	}
 	else {
-		compiled << "LOAD %r1 " << m_rightNumber << "\n";
+		compiled << "SET %r" << tmpRegister << " " << m_rightNumber << " #right number is constant\n";
 	}
 
-	compiled << command << " %r0 %r1 #execute operation in condition\n";
+	compiled << command << " %r" << registerNumber << " %r" << tmpRegister << " #execute operation in condition\n";
 
 	return compiled.str();
 }

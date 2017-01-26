@@ -1,6 +1,9 @@
 #include "CommandWhile.hpp"
 #include "driver.hpp"
 
+const unsigned int WORK_REGISTER = 1;
+const unsigned int TMP_REGISTER = 2;
+
 CommandWhile::CommandWhile(ConditionPtr condition, CommandPtrs const & commands)
 {
 	m_condition = condition;
@@ -20,9 +23,9 @@ std::string CommandWhile::compile(Calculator::Driver & driver) {
 	compiled << "#while block\n";
 	compiled << conditionsLabel << ": #conditions label\n";
 
-	compiled << m_condition->evaluate(driver, 0);
+	compiled << m_condition->evaluate(driver, WORK_REGISTER, TMP_REGISTER);
 
-	compiled << "JZERO %r0 @" << endLabel << " #jump to end label when condition is false\n";
+	compiled << "JZERO %r" << WORK_REGISTER << " @" << endLabel << " #jump to end label when condition is false\n";
 	for (auto& cmd : m_commands) {
 		compiled << cmd->compile(driver);
 	}

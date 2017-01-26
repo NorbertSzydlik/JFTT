@@ -24,7 +24,8 @@ public:
 	Condition(Type type, Number leftNumber, Number rightNumber);
 
 	~Condition();
-	std::string evaluate(Calculator::Driver& driver, unsigned int  registerNumber);
+	
+	std::string evaluate(Calculator::Driver& driver, unsigned int registerNumber, unsigned int tmpRegister);
 private:
 	enum class Operands {
 		IDENTIFIER_IDENTIFIER,

@@ -27,14 +27,11 @@ CodeBlockPtr CommandAssign::getCodeBlock(Calculator::Driver & driver)
 
 	std::ostringstream compiled;
 
+	compiled << m_expression->evaluateToRegister(driver, 1);
 
-
-	compiled << m_expression->evaluateToRegister(driver, 0);
-
-	compiled << m_identifier->loadPositionToRegister(driver, 2);
-	compiled << " STORE %r0 %r2 #save expression value to memory\n";
+	compiled << m_identifier->loadPositionToRegister(driver, 0);
+	compiled << "STORE %r1 #save expression value to memory\n";
 	codeBlock->setSource(compiled);
 
 	return codeBlock;
 }
-
