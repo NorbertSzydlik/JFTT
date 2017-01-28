@@ -27,9 +27,10 @@ using token=Calculator::Parser::token;
 %x comment Error
 
 %%
-<INITIAL>[\[] BEGIN(comment);
-<comment>[\]] BEGIN(INITIAL);
-<comment>.
+<INITIAL>\{ { BEGIN(comment); }
+<comment>\} { BEGIN(INITIAL);}
+<comment>. {}
+<comment>\n {}
 
 <INITIAL>"ENDWHILE" { return token::ENDWHILE; }
 <INITIAL>"ENDFOR" { return token::ENDFOR; }
@@ -53,7 +54,7 @@ using token=Calculator::Parser::token;
 
 
 <INITIAL>[_a-zA-Z]+ { yylval->build<std::string>() = yytext; return token::PIDENTIFIER; }
-<INITIAL>[0-9]+ { yylval->build<Number>() = std::stoul(yytext); return token::NUMBER; }
+<INITIAL>[0-9]+ { std::cout << "test" << std::endl; yylval->build<Number>() = std::stoul(yytext); std::cout << "test2" << std::endl; return token::NUMBER; }
 
 <INITIAL>":=" { return token::OP_ASSIGN; }
 <INITIAL>"+"  { return token::OP_ADD; }
@@ -61,8 +62,8 @@ using token=Calculator::Parser::token;
 <INITIAL>"*"  { return token::OP_MULTIPLY; }
 <INITIAL>"/"  { return token::OP_DIVIDE; }
 <INITIAL>"%"  { return token::OP_MOD; }
-<INITIAL>"("  { return token::LP; }
-<INITIAL>")"  { return token::RP; }
+<INITIAL>"["  { return token::LP; }
+<INITIAL>"]"  { return token::RP; }
 
 
 <INITIAL>"<="  { return token::OP_LET; }
@@ -73,7 +74,8 @@ using token=Calculator::Parser::token;
 <INITIAL>"="   { return token::OP_EQ; }
 
 
-<INITIAL>[ \t\n]+ { }
+<INITIAL>[ \t\r]+ { }
+<INITIAL>[\n] { ++yylineno; }
 
 <INITIAL>";" { return token::SEMICOLON; }
 
