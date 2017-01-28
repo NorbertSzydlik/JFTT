@@ -5920,8 +5920,8 @@ namespace Catch {
         }
 
         FatalConditionHandler() : m_isSet( true ) {
-            for( std::size_t i = 0; i < sizeof(signalDefs)/sizeof(SignalDefs); ++i )
-                signal( signalDefs[i].id, handleSignal );
+            //for( std::size_t i = 0; i < sizeof(signalDefs)/sizeof(SignalDefs); ++i )
+            //    signal( signalDefs[i].id, handleSignal );
         }
         ~FatalConditionHandler() {
             reset();
@@ -10660,4 +10660,3 @@ int main (int argc, char * const argv[]) {
 using Catch::Detail::Approx;
 
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
-

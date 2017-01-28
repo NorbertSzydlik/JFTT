@@ -5,6 +5,7 @@
 #include <map>
 
 #include "Number.hpp"
+#include "logging.h"
 
 GebalaCompiler::GebalaCompiler()
 {
@@ -15,6 +16,7 @@ GebalaCompiler::~GebalaCompiler()
 }
 
 std::string GebalaCompiler::compile(std::string input) {
+	LOG("raw:\n" << input << "\nend raw" );
 	input = removeComments(input);
 	input = removeEmptyLines(input);
 	input = trimLines(input);
@@ -22,6 +24,7 @@ std::string GebalaCompiler::compile(std::string input) {
 	input = replaceLabelsWithLines(input);
 	input = fixRegisterNames(input);
 	input = addHalt(input);
+	LOG("compiled:\n" << input << "\nend compiled");
 	return input;
 }
 
@@ -124,44 +127,24 @@ std::string GebalaCompiler::compileCommand(std::string input)
 	else if (cmd == "SET")
 	{
 		auto registerNumber = getRegexNumber(match[2]);
-		const auto constToSet = Number(match[3]);
+		std::string constToSetStr = match[3].str();
+		const auto constToSet = Number(constToSetStr.c_str());
 
 		compiled << "ZERO " << registerNumber << "\n";
 
 		if(constToSet != 0)
 		{
-			const auto digitsNumber = constToSet.numberOfDigits();
-			std::vector<char> digits(digitsNumber, '0');
+			auto currentBit = Number(1) << (sizeof(Number) * 8 - 1);
+			while((currentBit & constToSet) == 0) currentBit >>= 1;
+			compiled << "INC " << registerNumber << "\n";
+			if(currentBit > 1) compiled << "SHL " << registerNumber << "\n";
+			currentBit >>= 1;
 
-			//copy digits to vector
-			for(auto i = decltype(digitsNumber){0}; i < digitsNumber; ++i)
+			while(currentBit > 0)
 			{
-				digits[i] = constToSet.digitAt(i);
-			}
-
-			bool mostSignificantBitFound = false;
-			for(auto& c : digits)
-			{
-				//find first bit if not found yet
-				auto i = 1 << 7;
-				while(!mostSignificantBitFound && i > 0)
-				{
-					if((i & c) > 0) {
-						mostSignificantBitFound = true;
-						compiled << "INC " << registerNumber << "\n";
-					}
-					i >>= 1;
-				}
-				for(; i > 0; i >>= 1)
-				{
-					compiled << "SHL " << registerNumber << "\n";
-
-					//if there is one on position, increment
-					if((i & c) > 0)
-					{
-						compiled << "INC " << registerNumber << "\n";
-					}
-				}
+				if((currentBit & constToSet) != 0) compiled << "INC " << registerNumber << "\n";
+				if(currentBit > 1) compiled << "SHL " << registerNumber << "\n";
+				currentBit >>= 1;
 			}
 		}
 	}

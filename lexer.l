@@ -54,7 +54,7 @@ using token=Calculator::Parser::token;
 
 
 <INITIAL>[_a-zA-Z]+ { yylval->build<std::string>() = yytext; return token::PIDENTIFIER; }
-<INITIAL>[0-9]+ { std::cout << "test" << std::endl; yylval->build<Number>() = std::stoul(yytext); std::cout << "test2" << std::endl; return token::NUMBER; }
+<INITIAL>[0-9]+ { yylval->build<Number>() = std::stoul(yytext); return token::NUMBER; }
 
 <INITIAL>":=" { return token::OP_ASSIGN; }
 <INITIAL>"+"  { return token::OP_ADD; }

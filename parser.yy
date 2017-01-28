@@ -88,7 +88,7 @@
 %%
 program: DECLARE vdeclarations IN commands END { driver.setCommands($4); }
 
-vdeclarations: vdeclarations PIDENTIFIER { driver.declare($2);}
+vdeclarations: vdeclarations PIDENTIFIER { std::cout << "declare: " << $2 << std::endl; driver.declare($2);}
     | vdeclarations PIDENTIFIER LP NUMBER RP { driver.declare($2, $4);}
 	|
 

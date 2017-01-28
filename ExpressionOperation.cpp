@@ -92,7 +92,7 @@ Number ExpressionOperation::evaluateConstNumbers()
 	case Type::OP_ADD: return m_leftNumber + m_rightNumber;
 	case Type::OP_SUB: return std::max(m_leftNumber - m_rightNumber, Number(0));
 	case Type::OP_MUL: return m_leftNumber * m_rightNumber;
-	case Type::OP_DIV: return m_rightNumber != 0 ? m_leftNumber / m_rightNumber : 0;
-	case Type::OP_MOD: return m_rightNumber != 0 ? m_leftNumber % m_rightNumber : 0;
+	case Type::OP_DIV: return m_rightNumber != 0 ? cln::truncate1(m_leftNumber / m_rightNumber) : 0;
+	case Type::OP_MOD: return m_rightNumber != 0 ? cln::mod(m_leftNumber, m_rightNumber) : 0;
 	}
 }

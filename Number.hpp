@@ -1,3 +1,3 @@
 #pragma once
-#include "InfInt.h"
-using Number = InfInt;
+#include <cln/cln.h>
+using Number = cln::cl_I;

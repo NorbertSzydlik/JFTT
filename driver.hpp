@@ -16,7 +16,11 @@ class Driver{
 public:
    Driver() : parser( nullptr ),
 	   scanner( nullptr )
-   {};
+   {
+     std::cout << __FUNCTION__ << std::endl;
+     m_lastLabelNumbers.clear();
+     m_declaredVariables.clear();
+   };
 
    virtual ~Driver();
 

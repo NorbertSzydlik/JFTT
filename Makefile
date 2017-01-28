@@ -29,7 +29,7 @@ CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 				 location.hh position.hh \
 			    stack.hh parser.output parser.o \
 				 lexer.o lexer.yy.cc $(EXE) \
-				main_test.o test\
+				main_test.o tests/test_Assignment.o test\
 
 .PHONY: all
 all: wc
