@@ -25,12 +25,24 @@ public:
   bool checkOutput(std::ostringstream& programOutput, std::vector<int> expectedOutputs)
   {
     std::istringstream programOutputStream(programOutput.str());
-    int outputNumber;
 
+    std::string line;
+    std::vector<std::string> outputLines;
+
+    while (std::getline(programOutputStream, line)) {
+      outputLines.push_back(line);
+    }
+
+    REQUIRE(outputLines.size() == expectedOutputs.size());
+
+    auto currentOutputLine = std::begin(outputLines);
     for(auto& expected : expectedOutputs )
     {
-      programOutputStream >> outputNumber;
+      int outputNumber = std::stoi(*currentOutputLine);
       CHECK(outputNumber == expected);
+      ++currentOutputLine;
     }
+
+    return true;
   }
 };

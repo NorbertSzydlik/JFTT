@@ -8,7 +8,6 @@
 #include "parser.tab.hh"
 #include "Number.hpp"
 
-
 namespace Calculator
 {
 

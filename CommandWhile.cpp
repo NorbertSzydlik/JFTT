@@ -19,13 +19,17 @@ std::string CommandWhile::compile(Calculator::Driver & driver) {
 
 	std::string conditionsLabel = driver.getNextLabelFor("while_condition_check");
 	std::string endLabel = driver.getNextLabelFor("while_end");
+	std::string commandBlockLabel = driver.getNextLabelFor("while_commands");
 
 	compiled << "#while block\n";
 	compiled << conditionsLabel << ": #conditions label\n";
 
 	compiled << m_condition->evaluate(driver, WORK_REGISTER, TMP_REGISTER);
 
-	compiled << "JZERO %r" << WORK_REGISTER << " @" << endLabel << " #jump to end label when condition is false\n";
+	compiled << "JZERO %r" << WORK_REGISTER << " @" << commandBlockLabel << " #jump to command block label if condition is true (e.g register == 0)\n";
+	compiled << "JUMP @" << endLabel << " #condition failed, jump to end\n";
+
+  compiled << commandBlockLabel << ": #start of command block\n";
 	for (auto& cmd : m_commands) {
 		compiled << cmd->compile(driver);
 	}

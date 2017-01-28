@@ -44,6 +44,7 @@
    #include "CommandFor.hpp"
    #include "CommandIfElse.hpp"
    #include "CommandAssign.hpp"
+   #include "CommandSkip.hpp"
 
    #include "CommandDummy.hpp"
 
@@ -114,7 +115,7 @@ command: identifier OP_ASSIGN expression SEMICOLON { $$ = std::make_shared<Comma
 	| GET identifier SEMICOLON { $$ = std::make_shared<CommandGet>($2); }
 	| PUT identifier SEMICOLON { $$ = std::make_shared<CommandPut>($2); }
 	| PUT NUMBER SEMICOLON { $$ = std::make_shared<CommandPut>($2); }
-  | SKIP SEMICOLON {}
+  | SKIP SEMICOLON { $$ = std::make_shared<CommandSkip>(); }
 
 expression: NUMBER { $$ = std::make_shared<ExpressionNumber>($1);}
     | identifier { $$ = std::make_shared<ExpressionIdentifier>($1); }
