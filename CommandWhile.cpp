@@ -31,6 +31,7 @@ std::string CommandWhile::compile(Calculator::Driver & driver) {
 
   compiled << commandBlockLabel << ": #start of command block\n";
 	for (auto& cmd : m_commands) {
+		compiled << "# while-cmd: " << cmd->getCommandName() << "\n";
 		compiled << cmd->compile(driver);
 	}
 

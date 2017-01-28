@@ -1,6 +1,13 @@
 #include "CommandFor.hpp"
 #include "driver.hpp"
 
+#include "CommandWhile.hpp"
+#include "CommandAssign.hpp"
+#include "Condition.hpp"
+#include "ExpressionNumber.hpp"
+#include "ExpressionOperation.hpp"
+#include "ExpressionIdentifier.hpp"
+
 CommandFor::CommandFor(Identifier::IdentifierName identifierName,
 	IdentifierPtr fromIdentifier,
 	IdentifierPtr toIdentifier,
@@ -61,76 +68,88 @@ CommandFor::~CommandFor()
 {
 }
 
-std::ostringstream& CommandFor::checkConditions(std::ostringstream& compiled, Identifier& identifier, Calculator::Driver& driver, std::string endLabel) {
-	compiled << identifier.loadToRegister(driver, 0);
-
-	if (m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::NUMBER_IDENTIFIER) {
-		compiled << m_toIdentifier->loadToRegister(driver, 1);
-	}
-	else {
-		compiled << "LOAD %r1 " << m_toNumber << "\n";
-	}
-	compiled << "COPY %r2 %r0 #copy value of counter to other register\n";
-	if (m_isDownFor) {
-		compiled << "GE %r0 %r1 #counter >= toNumber\n";
-
-		compiled << "DEC %r2\n";
-	}
-	else {
-		
-		compiled << "GE %r1 %r0 #counter <= toNumber\n";
-
-		compiled << "INC %r2\n";
-	}
-	
-	compiled << identifier.loadPositionToRegister(driver, 1);
-	compiled << "STORE %r2 %r1 #save for counter in memory for later\n";
-
-	if (m_isDownFor) {
-		compiled << "JZERO %r0 @";
-	}
-	else {
-		compiled << "JZERO %r1 @";
-	}
-	compiled << endLabel << " #jump to end label if conditions are false\n";
-	return compiled;
-}
-
 std::string CommandFor::compile(Calculator::Driver & driver) {
 	std::ostringstream compiled;
 
 	driver.declare(m_identifierName);
-	Identifier identifier = Identifier(m_identifierName);
+	auto identifier = std::make_shared<Identifier>(m_identifierName);
 
-	std::string conditionCheckLabel = driver.getNextLabelFor("for_conditions_check");
-	std::string endLabel = driver.getNextLabelFor("for_end");
+	compiled << "#begin of 'for' block\n";
 
-	compiled << "#begin of for block\n";
 
-	compiled << "#reset identifier " << m_identifierName << "\n";
-	if (m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::IDENTIFIER_NUMBER) {
-		compiled << "#load counter " << m_identifierName << " to register\n";
-		compiled << m_fromIdentifier->loadToRegister(driver, 0);
+  ExpressionPtr initialAssignExpression;
+	switch(m_operands)
+	{
+		case Operands::IDENTIFIER_IDENTIFIER:
+		case Operands::IDENTIFIER_NUMBER:
+		  compiled << "#" << m_identifierName << " := " << m_fromIdentifier->getName() << "\n";
+		  initialAssignExpression = std::make_shared<ExpressionIdentifier>(m_fromIdentifier);
+		break;
+		case Operands::NUMBER_IDENTIFIER:
+		case Operands::NUMBER_NUMBER:
+		  compiled << "#" << m_identifierName << " := " << m_fromNumber << "\n";
+		  initialAssignExpression = std::make_shared<ExpressionNumber>(m_fromNumber);
+		break;
 	}
-	else {
-		compiled << "LOAD %r0 " << m_fromNumber << "\n";
+  auto initialAssign = std::make_shared<CommandAssign>(identifier, initialAssignExpression);
+
+  ConditionPtr condition;
+	switch(m_operands)
+	{
+		case Operands::IDENTIFIER_IDENTIFIER:
+		case Operands::NUMBER_IDENTIFIER:
+		  if(m_isDownFor)
+			{
+				compiled << "# WHILE " << m_identifierName << " > " << m_toIdentifier->getName() << " DO \n";
+				compiled << "# {commands}\n";
+				compiled << "#" << m_identifierName << " := " << m_identifierName << " - 1\n";
+				compiled << "# ENDWHILE \n";
+
+				condition = std::make_shared<Condition>(Condition::Type::OP_GE, identifier, m_toIdentifier);
+			}
+			else
+			{
+				compiled << "# WHILE " <<  m_toIdentifier->getName() << " > " << m_identifierName << " DO \n";
+				compiled << "# {commands}\n";
+				compiled << "#" << m_identifierName << " := " << m_identifierName << " + 1\n";
+				compiled << "# ENDWHILE \n";
+
+				condition = std::make_shared<Condition>(Condition::Type::OP_GE, m_toIdentifier, identifier);
+			}
+		break;
+		case Operands::IDENTIFIER_NUMBER:
+		case Operands::NUMBER_NUMBER:
+		  if(m_isDownFor)
+			{
+				compiled << "# WHILE " << m_identifierName << " > " << m_toNumber << " DO \n";
+				compiled << "# {commands}\n";
+				compiled << "#" << m_identifierName << " := " << m_identifierName << " - 1\n";
+				compiled << "# ENDWHILE \n";
+
+				condition = std::make_shared<Condition>(Condition::Type::OP_GE, identifier, m_toNumber);
+			}
+			else
+			{
+				compiled << "# WHILE " <<  m_toNumber << " > " << m_identifierName << " DO \n";
+				compiled << "# {commands}\n";
+				compiled << "#" << m_identifierName << " := " << m_identifierName << " + 1\n";
+				compiled << "# ENDWHILE \n";
+
+				condition = std::make_shared<Condition>(Condition::Type::OP_GE, m_toNumber, identifier);
+			}
+		break;
 	}
-	compiled << identifier.loadPositionToRegister(driver, 1);
-	compiled << "STORE %r0 %r1 #save counter to memory\n";
 
-	
-	compiled << conditionCheckLabel << ": #conditions check label\n";
+	auto commands = m_commands;
+  auto stepAssign = std::make_shared<CommandAssign>( identifier, std::make_shared<ExpressionOperation>(ExpressionOperation::Type::OP_ADD, identifier, Number(m_isDownFor ? -1 : 1)) );
+	commands.push_back(stepAssign);
 
-	checkConditions(compiled, identifier, driver, endLabel);
+	auto whileCmd = std::make_shared<CommandWhile>(condition, commands);
 
-	for (auto cmd : m_commands) {
-		std::cout << "test: for: before: " << cmd->getCommandName() << std::endl;
-		compiled << cmd->compile(driver);
-		std::cout << "test: for: after: " << cmd->getCommandName() << std::endl;
-	}
-	compiled << "JUMP @" << conditionCheckLabel << "\n";
-	compiled << endLabel << ": #for end label\n";
-	compiled << "#end of for block\n";
+  compiled << initialAssign->compile(driver);
+	compiled << whileCmd->compile(driver);
+
+	compiled << "#end of 'for' block\n";
 
 	driver.undeclare(m_identifierName);
 	return compiled.str();
