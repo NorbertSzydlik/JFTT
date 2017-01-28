@@ -84,3 +84,34 @@ BEGIN
   programOutputStream >> outputNumber;
   REQUIRE(outputNumber == 15);
 }
+
+TEST_CASE("relative array", "AssignmentTest")
+{
+  std::string program = R"DELIM(
+VAR
+  a[100] b
+BEGIN
+  b := 5;
+  a[b] := 122;
+  WRITE a[5];
+END
+)DELIM";
+
+  auto compiled = AssignmentTest().compile(program);
+
+  std::istringstream compiledFile(compiled);
+  std::ostringstream stdOut;
+  std::istringstream stdIn;
+  //std::ostream& out, std::istream& programStdIn, std::ostream& programStdOut
+  std::ostringstream programOutput;
+  auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
+
+  REQUIRE(result != 0);
+
+  std::istringstream programOutputStream(programOutput.str());
+
+  int outputNumber;
+
+  programOutputStream >> outputNumber;
+  REQUIRE(outputNumber == 122);
+}

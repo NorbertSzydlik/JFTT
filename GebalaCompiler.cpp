@@ -121,9 +121,6 @@ std::string GebalaCompiler::compileCommand(std::string input)
 	else if (cmd == "INC") {
 		compiled << "INC " << getRegexNumber(match[2]) << "\n";
 	}
-	else if (cmd == "ADD" || cmd == "SUB") {
-		compiled << cmd << " " << getRegexNumber(match[2]) << " " << getRegexNumber(match[3]) << "\n";
-	}
 	else if (cmd == "SET")
 	{
 		auto registerNumber = getRegexNumber(match[2]);

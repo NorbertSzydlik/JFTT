@@ -1,4 +1,5 @@
 #include <sstream>
+#include <cassert>
 #include "Identifier.hpp"
 #include "driver.hpp"
 
@@ -45,12 +46,13 @@ const std::string Identifier::loadPositionToRegister(Calculator::Driver & driver
 		compiled << "SET %r" << registerNumber << " " << position << " #memory position of identifier " << m_name << "\n";
 	}
 	else {
+		//assert(registerNumber != 0);
 		position = driver.getDeclarationPosition(m_name);
 		auto offsetPosition = driver.getDeclarationPosition(m_offsetIdentifierName);
 
-		compiled << "SET %r0 " << offsetPosition << "\n";
-		compiled << "SET %r" << registerNumber << " " << position << "\n";
-		compiled << "ADD %r" << registerNumber << "\n";
+		compiled << "SET %r0 " << offsetPosition << " #position of offset:" << m_offsetIdentifierName << "\n";
+		compiled << "SET %r" << registerNumber << " " << position << " #start of variable: " << m_name << " position\n";
+		compiled << "ADD %r" << registerNumber << " #add variable " << m_name << " position to offset defined by " << m_offsetIdentifierName << "\n";
 
 	}
 	return compiled.str();

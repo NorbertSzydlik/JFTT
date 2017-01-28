@@ -4,7 +4,7 @@
 CommandAssign::CommandAssign(IdentifierPtr const & identifier, ExpressionPtr const & expression)
 {
 	std::cout << __FUNCTION__ << std::endl;
-	
+
 	m_identifier = identifier;
 	m_expression = expression;
 }
@@ -32,7 +32,8 @@ CodeBlockPtr CommandAssign::getCodeBlock(Calculator::Driver & driver)
 
 	compiled << m_expression->evaluateToRegister(driver, 1);
 
-	compiled << m_identifier->loadPositionToRegister(driver, 0);
+	compiled << m_identifier->loadPositionToRegister(driver, 2);
+	compiled << "COPY %r2\n";
 	compiled << "STORE %r1 #save expression value to memory\n";
 	codeBlock->setSource(compiled);
 

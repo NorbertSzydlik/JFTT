@@ -14,6 +14,6 @@ ExpressionNumber::~ExpressionNumber()
 std::string ExpressionNumber::evaluateToRegister(Calculator::Driver& driver, unsigned int  registerNumber)
 {
 	std::ostringstream compiled;
-	compiled << "SET %r" << registerNumber << " " << m_number << " #expression number " << m_number << "\n";
+	compiled << "SET %r" << registerNumber << " " << m_number << " #evaluateToRegister expression number " << m_number << "\n";
 	return compiled.str();
 }
