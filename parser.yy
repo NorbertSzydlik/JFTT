@@ -96,7 +96,8 @@ commands: commands command { $1.push_back($2); $$ = $1; }
     |  command { $$.push_back($1); }
 
 command: identifier OP_ASSIGN expression SEMICOLON { $$ = std::make_shared<CommandAssign>($1, $3); }
-    | IF condition THEN commands ENDIF { $$ = std::make_shared<CommandIfElse>($2, $4); }
+  | identifier OP_EQ expression SEMICOLON { error("Did you mean ':='?"); $$ = std::make_shared<CommandAssign>($1, $3); }
+  | IF condition THEN commands ENDIF { $$ = std::make_shared<CommandIfElse>($2, $4); }
 	| IF condition THEN commands ELSE commands ENDIF { $$ = std::make_shared<CommandIfElse>($2, $4, $6); }
 
 	| WHILE condition DO commands ENDWHILE { $$ = std::make_shared<CommandWhile>($2, $4); }

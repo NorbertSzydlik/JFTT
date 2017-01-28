@@ -46,7 +46,7 @@ BEGIN
   std::ostringstream programOutput;
   auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
 
-  REQUIRE(result != 0);
+  REQUIRE(result > 0);
   REQUIRE(programOutput.str() == "1\n");
 }
 
@@ -72,7 +72,7 @@ BEGIN
   std::ostringstream programOutput;
   auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
 
-  REQUIRE(result != 0);
+  REQUIRE(result > 0);
 
   std::istringstream programOutputStream(programOutput.str());
   int outputNumber;
@@ -105,7 +105,7 @@ END
   std::ostringstream programOutput;
   auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
 
-  REQUIRE(result != 0);
+  REQUIRE(result > 0);
 
   std::istringstream programOutputStream(programOutput.str());
 
