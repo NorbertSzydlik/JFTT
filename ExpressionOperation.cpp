@@ -55,26 +55,31 @@ std::string ExpressionOperation::evaluateToRegister(Calculator::Driver& driver, 
 
 	if(m_operands == Operands::IDENTIFIER_IDENTIFIER)
 	{
-		compiled << m_rightIdentifier->loadPositionToRegister(driver, 0);
-		compiled << m_leftIdentifier->loadPositionToRegister(driver, registerNumber);
+		compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
+		compiled << m_rightIdentifier->loadPositionToRegister(driver, 2);
+		compiled << "COPY %r2\n";
 
 		compiled << command << " %r" << registerNumber << " #execute operation in expression\n";
 	}
 	else if(m_operands == Operands::NUMBER_IDENTIFIER)
 	{
-		compiled << m_rightIdentifier->loadPositionToRegister(driver, 0);
+		compiled << m_rightIdentifier->loadPositionToRegister(driver, 2);
+		compiled << "COPY %r2\n";
+		
 		compiled << "SET %r" << registerNumber << " " << m_leftNumber << "\n";
 
 		compiled << command << " %r" << registerNumber << " #execute operation in expression\n";
 	}
 	else if(m_operands == Operands::IDENTIFIER_NUMBER)
 	{
+		auto tmpPosition = driver.getTmpMemoryPosition();
 		compiled << "#prepare temporary memory allocation for const number on right side of evaluation\n";
-		compiled << "SET %r0 " << driver.getTmpMemoryPosition() << " #temporary memory position\n";
-		compiled << "SET %r" << registerNumber << " " << m_rightNumber << " #divide by " << m_rightNumber << "\n";
-		compiled << "STORE " << registerNumber << "\n";
+		compiled << "SET %r0 " << tmpPosition << " #temporary memory position\n";
+		compiled << "SET %r" << registerNumber << " " << m_rightNumber << " #right hand value " << m_rightNumber << "\n";
+		compiled << "STORE " << registerNumber << " #store right hand value to temporary position\n";
 
-		compiled << m_leftIdentifier->loadPositionToRegister(driver, registerNumber);
+		compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
+		compiled << "SET %r0 " << tmpPosition << " #restore temporary position to address register\n";
 
 		compiled << command << " %r" << registerNumber << " #execute operation in expression\n";
 	}
@@ -82,6 +87,8 @@ std::string ExpressionOperation::evaluateToRegister(Calculator::Driver& driver, 
 	{
 		compiled << "SET %r" << registerNumber << " " << evaluateConstNumbers() << "\n";
 	}
+
+	compiled << "#end of expression " << command << "\n";
 
 	return compiled.str();
 }

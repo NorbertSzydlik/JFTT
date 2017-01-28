@@ -15,7 +15,7 @@ CXXFLAGS = -O0  $(CXXDEBUG) $(CXXSTD) -v -I.
 
 MAIN_CPPOBJ = driver Command CommandWhile CommandFor CommandIfElse CommandPut CommandGet CommandDummy CommandAssign Identifier Expression ExpressionNumber ExpressionIdentifier ExpressionOperation InfInt CodeBlock Condition GebalaCompiler
 CPPOBJ = main $(MAIN_CPPOBJ)
-TESTOBJ = main_test tests/interpreter tests/test_Assignment $(MAIN_CPPOBJ)
+TESTOBJ = main_test tests/interpreter tests/test_Assignment tests/test_OperatorAdd $(MAIN_CPPOBJ)
 SOBJ =  parser lexer
 
 FILES = $(addsuffix .cpp, $(CPPOBJ))
@@ -29,7 +29,7 @@ CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
 				 location.hh position.hh \
 			    stack.hh parser.output parser.o \
 				 lexer.o lexer.yy.cc $(EXE) \
-				main_test.o tests/test_Assignment.o test\
+				main_test.o tests/test_Assignment.o tests/test_OperatorAdd.o test\
 
 .PHONY: all
 all: wc

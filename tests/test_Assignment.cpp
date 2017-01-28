@@ -75,7 +75,6 @@ BEGIN
   REQUIRE(result != 0);
 
   std::istringstream programOutputStream(programOutput.str());
-
   int outputNumber;
 
   programOutputStream >> outputNumber;
