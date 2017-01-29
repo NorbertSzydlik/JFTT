@@ -6,5 +6,5 @@ Compilation
 
 Usage
 =====
-  compiler <input program> <output program>
+  compiler [input program] [output program]
 
