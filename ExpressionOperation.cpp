@@ -308,14 +308,112 @@ std::string ExpressionOperation::evaluateMul(Calculator::Driver& driver, unsigne
 	std::ostringstream compiled;
 	compiled << "# operation mul" << "\n";
 
-	if(isRightOperandNumber() && m_rightNumber == 2)
+  if((isRightOperandNumber() && m_rightNumber == 0) || (isLeftOperandNumber() && m_leftNumber == 0))
+	{
+		compiled << "SET %r" << registerNumber << " 0\n";
+	}
+	else if(isRightOperandNumber() && m_rightNumber == 2)
 	{
 		compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
 		compiled << "SHL %r" << registerNumber << "\n";
 	}
+	else if(isRightOperandNumber() && m_rightNumber < 20)
+	{
+		compiled << m_leftIdentifier->loadPositionToRegister(driver, 2);
+		compiled << "COPY %r2\n";
+		compiled << "SET %r" << registerNumber << " 0\n";
+		for(auto i = m_rightNumber; i > 0; --i)
+		{
+			compiled << "ADD %r" << registerNumber << "\n";
+		}
+	}
+	else if(isLeftOperandNumber() && m_leftNumber < 20)
+	{
+		compiled << m_rightIdentifier->loadPositionToRegister(driver, 2);
+		compiled << "COPY %r2\n";
+		compiled << "SET %r" << registerNumber << " 0\n";
+		for(auto i = m_leftNumber; i > 0; --i)
+		{
+			compiled << "ADD %r" << registerNumber << "\n";
+		}
+	}
 	else
 	{
-		compiled << "# MUL NOT IMPLEMENTED YET";
+		driver.declare("_tmp_");
+		IdentifierPtr left;
+		IdentifierPtr right;
+
+		if(isLeftOperandNumber())
+		{
+			LOG("LEFT IS NUMBER");
+			compiled << "# " << m_leftNumber << " / " << m_rightIdentifier->getName() << "\n";
+			right = m_rightIdentifier;
+			left = std::make_shared<Identifier>("_tmp_");
+
+			compiled << left->loadPositionToRegister(driver, 2);
+			compiled << "COPY %r2\n";
+			compiled << "SET %r" << registerNumber << " " << m_leftNumber << " #set constant number\n";
+			compiled << "STORE %r" << registerNumber << "\n";
+		}
+		else if(isRightOperandNumber())
+		{
+			LOG("RIGHT IS NUMBER");
+			compiled << "# " << m_leftIdentifier->getName() << " / " << m_rightNumber << "\n";
+			left = m_leftIdentifier;
+			right = std::make_shared<Identifier>("_tmp_");
+
+			compiled << right->loadPositionToRegister(driver, 2);
+			compiled << "COPY %r2\n";
+			compiled << "SET %r" << registerNumber << " " << m_rightNumber << " #set constant number\n";
+			compiled << "STORE %r" << registerNumber << "\n";
+		}
+		else
+		{
+			LOG("BOTH IDENTIFIERS");
+			left = m_leftIdentifier;
+			right = m_rightIdentifier;
+		}
+
+		driver.declare("_mul_tmp", 2);
+		auto tmp = std::make_shared<Identifier>("_mul_tmp");
+
+    // r3 - left
+		// r4 - right
+
+		compiled << left->loadToRegister(driver, 3);
+		compiled << right->loadToRegister(driver, 4);
+		compiled << "SET %r" << registerNumber << " 0\n";
+
+		compiled << tmp->loadPositionToRegister(driver, 2);
+		compiled << "COPY %r2\n";
+
+		compiled << "STORE %r3\n";
+
+		auto mulBeginLabel = driver.getNextLabelFor("mul_begin");
+		auto mulAddLabel = driver.getNextLabelFor("mul_add");
+		auto mulStepLabel = driver.getNextLabelFor("mul_step");
+		auto mulEndLabel = driver.getNextLabelFor("mul_end");
+
+		compiled << mulBeginLabel << ":\n";
+
+    compiled << "#if right != 0\n";
+		compiled << "JZERO %r4 @" << mulEndLabel << "\n";
+		compiled << "#if right % 2 == 1\n";
+		compiled << "JODD %r4 @" << mulAddLabel << "\n";
+		compiled << "JUMP @" << mulStepLabel << "\n";
+    compiled << mulAddLabel << ":\n";
+		compiled << "# result = result + left\n";
+		compiled << "STORE %r3\n";
+		compiled << "ADD %r" << registerNumber << "\n";
+		compiled << mulStepLabel << ":\n";
+		compiled << "#left <<= 1; right >>= 1;\n";
+		compiled << "SHL %r3\n";
+		compiled << "SHR %r4\n";
+		compiled << "JUMP @" << mulBeginLabel << "\n";
+    compiled << mulEndLabel << ":\n";
+
+    driver.undeclare("_tmp_");
+		driver.undeclare("_mul_tmp");
 	}
 
 	return compiled.str();
