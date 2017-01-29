@@ -36,7 +36,7 @@ using token=Calculator::Parser::token;
 <INITIAL>"ENDFOR" { return token::ENDFOR; }
 <INITIAL>"WHILE" { return token::WHILE; }
 <INITIAL>"ENDIF" { return token::ENDIF; }
-<INITIAL>"DOWN" { return token::DOWN; }
+<INITIAL>"DOWNTO" { return token::DOWNTO; }
 <INITIAL>"FROM" { return token::FROM; }
 <INITIAL>"THEN" { return token::THEN; }
 <INITIAL>"ELSE" { return token::ELSE; }

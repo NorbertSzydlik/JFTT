@@ -57,7 +57,7 @@
 }
 
 
-%token DECLARE IN END IF THEN ELSE ENDIF WHILE DO ENDWHILE FOR DOWN FROM TO ENDFOR GET PUT SKIP
+%token DECLARE IN END IF THEN ELSE ENDIF WHILE DO ENDWHILE FOR DOWNTO FROM TO ENDFOR GET PUT SKIP
 %token EOF_TOKEN
 
 %token OP_ASSIGN
@@ -106,12 +106,13 @@ command: identifier OP_ASSIGN expression SEMICOLON { $$ = std::make_shared<Comma
 	| FOR PIDENTIFIER FROM NUMBER TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8);}
 	| FOR PIDENTIFIER FROM identifier TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
 	| FOR PIDENTIFIER FROM NUMBER TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
-    | FOR PIDENTIFIER FROM identifier TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $6, $4, $8); }
+  | FOR PIDENTIFIER FROM identifier TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $6, $4, $8); }
 
-	| FOR PIDENTIFIER DOWN FROM NUMBER TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $5, $7, $9, true); }
-	| FOR PIDENTIFIER DOWN FROM identifier TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $5, $7, $9, true); }
-	| FOR PIDENTIFIER DOWN FROM NUMBER TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $5, $7, $9, true); }
-    | FOR PIDENTIFIER DOWN FROM identifier TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $5, $7, $9, true); }
+	| FOR PIDENTIFIER FROM NUMBER DOWNTO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8, true); }
+	| FOR PIDENTIFIER FROM identifier DOWNTO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8, true); }
+	| FOR PIDENTIFIER FROM NUMBER DOWNTO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8, true); }
+  | FOR PIDENTIFIER FROM identifier DOWNTO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8, true); }
+
 	| GET identifier SEMICOLON { $$ = std::make_shared<CommandGet>($2); }
 	| PUT identifier SEMICOLON { $$ = std::make_shared<CommandPut>($2); }
 	| PUT NUMBER SEMICOLON { $$ = std::make_shared<CommandPut>($2); }

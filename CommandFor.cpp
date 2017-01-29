@@ -141,7 +141,7 @@ std::string CommandFor::compile(Calculator::Driver & driver) {
 	}
 
 	auto commands = m_commands;
-  auto stepAssign = std::make_shared<CommandAssign>( identifier, std::make_shared<ExpressionOperation>(ExpressionOperation::Type::OP_ADD, identifier, Number(m_isDownFor ? -1 : 1)) );
+  auto stepAssign = std::make_shared<CommandAssign>( identifier, std::make_shared<ExpressionOperation>((m_isDownFor ? ExpressionOperation::Type::OP_SUB : ExpressionOperation::Type::OP_ADD), identifier, 1) );
 	commands.push_back(stepAssign);
 
 	auto whileCmd = std::make_shared<CommandWhile>(condition, commands);

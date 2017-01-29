@@ -31,3 +31,27 @@ END
   REQUIRE(result > 0);
   Fixture().checkOutput(programOutput, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 }
+
+TEST_CASE("simple decreasing", "FOR")
+{
+  std::string program = R"DELIM(
+VAR
+BEGIN
+  FOR i FROM 10 DOWNTO 1 DO
+    WRITE i;
+  ENDFOR
+END
+)DELIM";
+
+  auto compiled = Fixture().compile(program);
+
+  std::istringstream compiledFile(compiled);
+  std::ostringstream stdOut;
+  std::istringstream stdIn;
+  //std::ostream& out, std::istream& programStdIn, std::ostream& programStdOut
+  std::ostringstream programOutput;
+  auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
+
+  REQUIRE(result > 0);
+  Fixture().checkOutput(programOutput, {10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
+}
