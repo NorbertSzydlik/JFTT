@@ -54,6 +54,7 @@ std::string ExpressionOperation::evaluateToRegister(Calculator::Driver& driver, 
 {
 	std::ostringstream compiled;
 
+  LOG("Evaluate expression to register " << registerNumber);
 	compiled << "#begin of expression operation" << "\n";
 
   if(m_operands == Operands::NUMBER_NUMBER)
@@ -62,6 +63,7 @@ std::string ExpressionOperation::evaluateToRegister(Calculator::Driver& driver, 
 	}
 	else
 	{
+		LOG("identifier is involved");
 		if(m_type == Type::OP_ADD || m_type == Type::OP_SUB) compiled << evaluateSubAdd(driver, registerNumber);
 		else if(m_type == Type::OP_DIV || m_type == Type::OP_MOD) compiled << evaluateDivMod(driver, registerNumber);
 		else if(m_type == Type::OP_MUL) compiled << evaluateMul(driver, registerNumber);
@@ -141,7 +143,7 @@ std::string ExpressionOperation::evaluateSubAdd(Calculator::Driver& driver, unsi
 
 std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsigned int registerNumber)
 {
-	LOG(__FUNCTION__  << " " << m_leftIdentifier->getName() << " " << (int)m_operands << " " << m_rightNumber);
+	LOG(__FUNCTION__);
 	std::ostringstream compiled;
 	compiled << "# operation div/mod\n";
 	if(isRightOperandNumber())
@@ -175,6 +177,8 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 
 	if(isLeftOperandNumber())
 	{
+		LOG("LEFT IS NUMBER");
+		compiled << "# " << m_leftNumber << " / " << m_rightIdentifier->getName() << "\n";
 		right = m_rightIdentifier;
 		left = std::make_shared<Identifier>("_tmp_");
 
@@ -185,6 +189,7 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 	}
 	else if(isRightOperandNumber())
 	{
+		LOG("RIGHT IS NUMBER");
 		compiled << "# " << m_leftIdentifier->getName() << " / " << m_rightNumber << "\n";
 		left = m_leftIdentifier;
 		right = std::make_shared<Identifier>("_tmp_");
@@ -196,6 +201,7 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 	}
 	else
 	{
+		LOG("BOTH IDENTIFIERS");
 		left = m_leftIdentifier;
 		right = m_rightIdentifier;
 	}

@@ -15,7 +15,9 @@ VAR
 BEGIN
   a := 10 / 3;
   WRITE a;
-  END
+  a := 10 % 3;
+  WRITE a;
+END
 )DELIM";
 
   auto compiled = Fixture().compile(program);
@@ -28,10 +30,13 @@ BEGIN
   auto result = interpret(compiledFile, stdOut, stdIn, programOutput);
 
   REQUIRE(result > 0);
-  Fixture().checkOutput(programOutput, {3});
+  Fixture().checkOutput(programOutput, {
+    3,
+    1
+  });
 }
 
-TEST_CASE("div both identifiers", "OperatorAdd")
+TEST_CASE("div both identifiers", "OperatorDiv")
 {
   std::string program = R"DELIM(
 VAR
@@ -64,7 +69,7 @@ END
   });
 }
 
-TEST_CASE("div left identifiers", "OperatorAdd")
+TEST_CASE("div left identifiers", "OperatorDiv")
 {
   std::string program = R"DELIM(
 VAR
@@ -97,7 +102,7 @@ END
   });
 }
 
-TEST_CASE("div right identifiers", "OperatorAdd")
+TEST_CASE("div right identifiers", "OperatorDiv")
 {
   std::string program = R"DELIM(
 VAR
@@ -105,9 +110,9 @@ VAR
 BEGIN
   a := 51;
   b := 12;
-  c := 51 / 12;
+  c := 51 / b;
   WRITE c;
-  d := 51 % 12;
+  d := 51 % b;
   WRITE d;
 END
 )DELIM";
