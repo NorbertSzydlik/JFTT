@@ -285,7 +285,7 @@ END
   Fixture().checkOutput(programOutput, {1, 4, 5, 8, 9, 12});
 }
 
-TEST_CASE("test operator !=", "IfElse")
+TEST_CASE("test operator <>", "IfElse")
 {
   std::string program = R"DELIM(
 VAR
@@ -295,37 +295,37 @@ BEGIN
   b := 1;
   c := 2;
 
-  IF a != 1 THEN
+  IF a <> 1 THEN
     WRITE 1;
   ELSE
     WRITE 2;
   ENDIF
 
-  IF a != 2 THEN
+  IF a <> 2 THEN
     WRITE 3;
   ELSE
    WRITE 4;
   ENDIF
 
-  IF 1 != a THEN
+  IF 1 <> a THEN
     WRITE 5;
   ELSE
    WRITE 6;
   ENDIF
 
-  IF 2 != a THEN
+  IF 2 <> a THEN
     WRITE 7;
   ELSE
    WRITE 8;
   ENDIF
 
-  IF a != b THEN
+  IF a <> b THEN
     WRITE 9;
   ELSE
     WRITE 10;
   ENDIF
 
-  IF a != c THEN
+  IF a <> c THEN
     WRITE 11;
   ELSE
     WRITE 12;

@@ -68,7 +68,7 @@ using token=Calculator::Parser::token;
 
 <INITIAL>"<="  { return token::OP_LET; }
 <INITIAL>">="  { return token::OP_GET; }
-<INITIAL>"!="  { return token::OP_NEQ; }
+<INITIAL>"<>"  { return token::OP_NEQ; }
 <INITIAL>"<"   { return token::OP_LT; }
 <INITIAL>">"   { return token::OP_GT; }
 <INITIAL>"="   { return token::OP_EQ; }
