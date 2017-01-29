@@ -21,9 +21,17 @@ public:
 
 	~ExpressionOperation();
 	std::string evaluateToRegister(Calculator::Driver& driver, unsigned int registerNumber) override;
-
 private:
 	Number evaluateConstNumbers();
+	std::string evaluateSubAdd(Calculator::Driver& driver, unsigned int registerNumber);
+	std::string evaluateDivMod(Calculator::Driver& driver, unsigned int registerNumber);
+	std::string evaluateMul(Calculator::Driver& driver, unsigned int registerNumber);
+
+	bool isLeftOperandNumber() { return m_operands == Operands::NUMBER_IDENTIFIER || m_operands == Operands::NUMBER_NUMBER;}
+	bool isRightOperandNumber() { return m_operands == Operands::IDENTIFIER_NUMBER || m_operands == Operands::NUMBER_NUMBER;}
+	bool isLeftOperandIdentifier() { return m_operands == Operands::IDENTIFIER_NUMBER || m_operands == Operands::IDENTIFIER_IDENTIFIER;}
+  bool isRightOperandIdentifier() { return m_operands == Operands::NUMBER_IDENTIFIER || m_operands == Operands::IDENTIFIER_IDENTIFIER;}
+
 	enum class Operands {
 		IDENTIFIER_IDENTIFIER,
 		IDENTIFIER_NUMBER,

@@ -1,6 +1,8 @@
 #include "CommandWhile.hpp"
 #include "driver.hpp"
 
+#include "logging.h"
+
 const unsigned int WORK_REGISTER = 1;
 const unsigned int TMP_REGISTER = 2;
 
@@ -15,6 +17,7 @@ CommandWhile::~CommandWhile()
 }
 
 std::string CommandWhile::compile(Calculator::Driver & driver) {
+	LOG("before while");
 	std::ostringstream compiled;
 
 	std::string conditionsLabel = driver.getNextLabelFor("while_condition_check");
@@ -31,6 +34,7 @@ std::string CommandWhile::compile(Calculator::Driver & driver) {
 
   compiled << commandBlockLabel << ": #start of command block\n";
 	for (auto& cmd : m_commands) {
+		LOG("while-cmd: " << cmd->getCommandName());
 		compiled << "# while-cmd: " << cmd->getCommandName() << "\n";
 		compiled << cmd->compile(driver);
 	}
@@ -38,6 +42,8 @@ std::string CommandWhile::compile(Calculator::Driver & driver) {
 	compiled << "JUMP @" << conditionsLabel << " #jump to check conditions\n";
 	compiled << endLabel << ": #end label\n";
 	compiled << "#end of while block\n";
+
+  LOG("after while");
 
 	return compiled.str();
 }

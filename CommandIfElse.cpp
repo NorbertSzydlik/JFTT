@@ -1,6 +1,8 @@
 #include "CommandIfElse.hpp"
 #include "driver.hpp"
 
+#include "logging.h"
+
 const unsigned int WORK_REGISTER = 1;
 const unsigned int TMP_REGISTER = 2;
 
@@ -38,27 +40,27 @@ std::string CommandIfElse::compile(Calculator::Driver & driver) {
 	compiled << "JUMP @" << elseLabel << " #false - jump to else\n";
 	compiled << conditionOkLabel << ": #if part\n";
 	for (auto& cmd : m_ifCommands) {
-		std::cout << "test: if-else(if): before: " << cmd->getCommandName() << std::endl;
+		LOG("test: if-else(if): before: " << cmd->getCommandName());
 		compiled << cmd->compile(driver);
-		std::cout << "test: if-else(if): after: " << cmd->getCommandName() << std::endl;
+		LOG("test: if-else(if): after: " << cmd->getCommandName());
 	}
-	std::cout << "after if commands" << std::endl;
+	LOG("after if commands");
 	compiled << "JUMP @" << endLabel << " #jump to end label, as we need to execute only if part\n";
 	compiled << "#else part\n";
 	compiled << elseLabel << ": #else label\n";
 
-	std::cout << "before elseCommands: " << m_elseCommands[0]->getCommandName() << std::endl;
+  LOG("before else commands");
 	for (auto& cmd : m_elseCommands) {\
-		std::cout << "test: if-else(else): before: " << cmd->getCommandName() << std::endl;
+		LOG("test: if-else(else): before: " << cmd->getCommandName());
 		compiled << cmd->compile(driver);
-		std::cout << "test: if-else(else): after: " << cmd->getCommandName() << std::endl;
+		LOG("test: if-else(else): after: " << cmd->getCommandName());
 	}
-	std::cout << "after elseCommands" << std::endl;
+	LOG("after else commands");
 
 	compiled << endLabel << ": #if-else end label\n";
 	compiled << "#end of if-else block\n";
 
-	std::cout << "if else end" << std::endl;
+  LOG("if else end");
 	return compiled.str();
 }
 
