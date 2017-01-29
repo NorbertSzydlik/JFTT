@@ -3,6 +3,7 @@
 #include <string>
 /* Implementation of yyFlexScanner */
 #include "scanner.hpp"
+#include "logging.h"
 
 /* typedef to make the returns for the tokens shorter */
 using token=Calculator::Parser::token;
@@ -53,7 +54,7 @@ using token=Calculator::Parser::token;
 <INITIAL>"END" { return token::END; }
 
 
-<INITIAL>[_a-zA-Z]+ { yylval->build<std::string>() = yytext; return token::PIDENTIFIER; }
+<INITIAL>[_a-z]+ { yylval->build<std::string>() = yytext; return token::PIDENTIFIER; }
 <INITIAL>[0-9]+ { yylval->build<Number>() = std::stoul(yytext); return token::NUMBER; }
 
 <INITIAL>":=" { return token::OP_ASSIGN; }
@@ -78,6 +79,7 @@ using token=Calculator::Parser::token;
 <INITIAL>[\n] { ++yylineno; }
 
 <INITIAL>";" { return token::SEMICOLON; }
+<INITIAL>[A-Z][^ \t\r\n;]* { std::cerr << "Unexpected token: '" << yytext << "' on line: " << yylineno << "'\n"; exit(1); }
 
 <<EOF>>  { return token::EOF_TOKEN; }
 %%

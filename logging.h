@@ -1,3 +1,5 @@
+#pragma once
+
 #define DEBUG_LOG
 
 #ifdef DEBUG_LOG

@@ -13,7 +13,7 @@ int main(const int argc, const char **argv)
 	std::ifstream source(argv[1]);
 	std::ofstream compiled(argv[2]);
 	std::string sourceString((std::istreambuf_iterator<char>(source)),
-		std::istreambuf_iterator<char>());
+	std::istreambuf_iterator<char>());
 
 	driver.parse(sourceString);
 	driver.compile(compiled) << "\n";

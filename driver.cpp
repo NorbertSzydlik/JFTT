@@ -20,7 +20,7 @@ Calculator::Driver::~Driver(){
 
 void Calculator::Driver::parse( std::string input )
 {
-  LOG(input);
+  LOG("input:\n" << input << "\nend input");
 
   std::istringstream inputStream(input);
   m_errorStream.str("");
@@ -78,9 +78,9 @@ bool Calculator::Driver::isError() const
 
 CodeBlockPtr Calculator::Driver::compileToBlock() {
   CodeBlockPtr codeBlock = std::make_shared<CodeBlock>();
-  std::cout << m_commands.size() << std::endl;
+  LOG(m_commands.size());
   for (CommandPtr cmd : m_commands) {
-    std::cout << cmd->getCommandName() << std::endl;
+    LOG(cmd->getCommandName());
     codeBlock->addBlock(cmd->getCodeBlock(*this));
   }
   return codeBlock;
@@ -106,7 +106,7 @@ std::string Calculator::Driver::getNextLabelFor(std::string labelName) {
 
 bool Calculator::Driver::doesDeclarationExist(std::string identifierName)
 {
-  std::cout << "check: " << identifierName << " from elems: " << m_declaredVariables.size() << std::endl;
+  LOG("check: " << identifierName << " from elems: " << m_declaredVariables.size());
   if(m_declaredVariables.empty()) return false;
   else return m_declaredVariables.find(identifierName) != std::end(m_declaredVariables);
 }
@@ -137,7 +137,7 @@ void Calculator::Driver::declare(std::string identifierName, Number size) {
     return;
   }
   m_declaredVariables[identifierName] = m_lastMemoryAddress;
-  std::cout << "declare: " << identifierName << " with size: " << size << " @ " << m_lastMemoryAddress << std::endl;
+  LOG("declare: " << identifierName << " with size: " << size << " @ " << m_lastMemoryAddress);
   m_lastMemoryAddress += size;
 }
 
