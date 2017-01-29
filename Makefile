@@ -11,7 +11,7 @@ CSTD = -std=c99
 CXXSTD = -std=c++14
 
 CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD)
-CXXFLAGS = -O0  $(CXXDEBUG) $(CXXSTD) -v -I.
+CXXFLAGS = -O0  $(CXXDEBUG) $(CXXSTD) -v -I. -lcln
 
 MAIN_CPPOBJ = driver Command CommandSkip CommandWhile CommandFor CommandIfElse CommandPut CommandGet CommandDummy CommandAssign Identifier Expression ExpressionNumber ExpressionIdentifier ExpressionOperation InfInt CodeBlock Condition GebalaCompiler
 CPPOBJ = main $(MAIN_CPPOBJ)
@@ -52,8 +52,7 @@ lexer: lexer.l
 test: $(TEST_FILES)
 	$(MAKE) $(SOBJ)
 	$(MAKE) $(TESTOBJS)
-	echo "$(CXX) $(CXXFLAGS) -o test $(TESTOBJS) parser.o lexer.o  $(LIBS) -lgtest -lgtest_main -lcln -pthread"
-	$(CXX) $(CXXFLAGS) -o test $(TESTOBJS) parser.o lexer.o  $(LIBS) -lcln -pthread
+	$(CXX) $(CXXFLAGS) -o test $(TESTOBJS) parser.o lexer.o  $(LIBS) -pthread
 
 .PHONY: clean
 clean:
