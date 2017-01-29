@@ -1,4 +1,9 @@
-simple_wc_example
+Compilation
 =================
+1) To compile program library `cln` is needed and compiler has to have access to it.
+2) Compile program using `make` command
 
-simple word count example using flex/bison parser
+Usage
+=====
+  compiler <input program> <output program>
+
