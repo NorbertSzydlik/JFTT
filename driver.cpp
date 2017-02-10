@@ -104,6 +104,16 @@ std::string Calculator::Driver::getNextLabelFor(std::string labelName) {
   return stringStream.str();
 }
 
+std::string Calculator::Driver::getUniqueNameFor(std::string name)
+{
+  static int currentNumber = 0;
+  std::ostringstream stringStream;
+  stringStream << "tmp_" << name << "_" << currentNumber++;
+
+  return stringStream.str();
+}
+
+
 bool Calculator::Driver::doesDeclarationExist(std::string identifierName)
 {
   LOG("check: " << identifierName << " from elems: " << m_declaredVariables.size());

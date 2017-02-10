@@ -39,6 +39,7 @@ public:
    void setCommands(CommandPtrs const & commands);
 
    std::string getNextLabelFor(std::string labelName = "");
+   std::string getUniqueNameFor(std::string name);
    void declare(std::string identifierName);
    void declare(std::string identifierName, Number size);
    void undeclare(std::string identifierName);

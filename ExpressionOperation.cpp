@@ -82,6 +82,7 @@ Number ExpressionOperation::evaluateConstNumbers()
 	case Type::OP_MUL: return m_leftNumber * m_rightNumber;
 	case Type::OP_DIV: return m_rightNumber != 0 ? cln::truncate1(m_leftNumber / m_rightNumber) : 0;
 	case Type::OP_MOD: return m_rightNumber != 0 ? cln::mod(m_leftNumber, m_rightNumber) : 0;
+	default: return -1;
 	}
 }
 
@@ -158,7 +159,14 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 		if(m_rightNumber == 1)
 		{
 			LOG("RIGHT operand == 1");
-			compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
+			if(m_type == Type::OP_DIV)
+			{
+				compiled << m_leftIdentifier->loadToRegister(driver, registerNumber);
+			} else
+			{
+				compiled << "SET %r" << registerNumber << " 0\n";
+			}
+
 			return compiled.str();
 		}
 		if(m_rightNumber == 2)
@@ -173,14 +181,15 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 	IdentifierPtr left;
 	IdentifierPtr right;
 
-  driver.declare("_tmp_");
+  auto tmpName = driver.getUniqueNameFor("tmp");
+  driver.declare(tmpName);
 
 	if(isLeftOperandNumber())
 	{
 		LOG("LEFT IS NUMBER");
 		compiled << "# " << m_leftNumber << " / " << m_rightIdentifier->getName() << "\n";
 		right = m_rightIdentifier;
-		left = std::make_shared<Identifier>("_tmp_");
+		left = std::make_shared<Identifier>(tmpName);
 
 		compiled << left->loadPositionToRegister(driver, 2);
 		compiled << "COPY %r2\n";
@@ -192,7 +201,7 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 		LOG("RIGHT IS NUMBER");
 		compiled << "# " << m_leftIdentifier->getName() << " / " << m_rightNumber << "\n";
 		left = m_leftIdentifier;
-		right = std::make_shared<Identifier>("_tmp_");
+		right = std::make_shared<Identifier>(tmpName);
 
 		compiled << right->loadPositionToRegister(driver, 2);
 		compiled << "COPY %r2\n";
@@ -215,26 +224,30 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 	compiled << "# ENDWHILE\n";
 	compiled << "# divD := divD / 2;\n";
 
-	driver.declare("div_Q");
-	auto divQ = std::make_shared<Identifier>("div_Q");
+  auto divQName = driver.getUniqueNameFor("div_Q");
+	driver.declare(divQName);
+	auto divQ = std::make_shared<Identifier>(divQName);
 	auto cmdAssignQ = std::make_shared<CommandAssign>(divQ, std::make_shared<ExpressionNumber>(0) );
 	compiled << cmdAssignQ->compile(driver);
 
-	driver.declare("div_R");
-	auto divR = std::make_shared<Identifier>("div_R");
+  auto divRname = driver.getUniqueNameFor("div_R");
+	driver.declare(divRname);
+	auto divR = std::make_shared<Identifier>(divRname);
 	auto cmdAssignR = std::make_shared<CommandAssign>(divR, std::make_shared<ExpressionIdentifier>(left) );
 	compiled << cmdAssignR->compile(driver);
 
-	driver.declare("div_D");
-	auto divD = std::make_shared<Identifier>("div_D");
+  auto divDname = driver.getUniqueNameFor("div_D");
+	driver.declare(divDname);
+	auto divD = std::make_shared<Identifier>(divDname);
 	auto cmdAssignD = std::make_shared<CommandAssign>(divD, std::make_shared<ExpressionIdentifier>(right) );
 	compiled << cmdAssignD->compile(driver);
 
 	//auto writeD = std::make_shared<CommandPut>(divD);
 	//compiled << writeD->compile(driver);
 
-	driver.declare("div_N");
-	auto divN = std::make_shared<Identifier>("div_N");
+  auto divNname = driver.getUniqueNameFor("div_N");
+	driver.declare(divNname);
+	auto divN = std::make_shared<Identifier>( divNname );
 	auto cmdAssignN = std::make_shared<CommandAssign>(divN, std::make_shared<ExpressionIdentifier>(left) );
 	compiled << cmdAssignN->compile(driver);
 
@@ -294,11 +307,11 @@ std::string ExpressionOperation::evaluateDivMod(Calculator::Driver& driver, unsi
 		default: LOG("wrong operation"); assert(false);
 	}
 
-  driver.undeclare("_tmp_");
-  driver.undeclare("div_Q");
-	driver.undeclare("div_R");
-	driver.undeclare("div_D");
-	driver.undeclare("div_N");
+  driver.undeclare(tmpName);
+  driver.undeclare(divQName);
+	driver.undeclare(divRname);
+	driver.undeclare(divDname);
+	driver.undeclare(divNname);
 
 	return compiled.str();
 }
@@ -339,7 +352,8 @@ std::string ExpressionOperation::evaluateMul(Calculator::Driver& driver, unsigne
 	}
 	else
 	{
-		driver.declare("_tmp_");
+		auto tmpName = driver.getUniqueNameFor("_tmp_");
+		driver.declare(tmpName);
 		IdentifierPtr left;
 		IdentifierPtr right;
 
@@ -348,7 +362,7 @@ std::string ExpressionOperation::evaluateMul(Calculator::Driver& driver, unsigne
 			LOG("LEFT IS NUMBER");
 			compiled << "# " << m_leftNumber << " / " << m_rightIdentifier->getName() << "\n";
 			right = m_rightIdentifier;
-			left = std::make_shared<Identifier>("_tmp_");
+			left = std::make_shared<Identifier>(tmpName);
 
 			compiled << left->loadPositionToRegister(driver, 2);
 			compiled << "COPY %r2\n";
@@ -360,7 +374,7 @@ std::string ExpressionOperation::evaluateMul(Calculator::Driver& driver, unsigne
 			LOG("RIGHT IS NUMBER");
 			compiled << "# " << m_leftIdentifier->getName() << " / " << m_rightNumber << "\n";
 			left = m_leftIdentifier;
-			right = std::make_shared<Identifier>("_tmp_");
+			right = std::make_shared<Identifier>(tmpName);
 
 			compiled << right->loadPositionToRegister(driver, 2);
 			compiled << "COPY %r2\n";
@@ -374,8 +388,9 @@ std::string ExpressionOperation::evaluateMul(Calculator::Driver& driver, unsigne
 			right = m_rightIdentifier;
 		}
 
-		driver.declare("_mul_tmp", 2);
-		auto tmp = std::make_shared<Identifier>("_mul_tmp");
+		auto mulTmpName = driver.getUniqueNameFor("mul");
+		driver.declare(mulTmpName, 2);
+		auto tmp = std::make_shared<Identifier>(mulTmpName);
 
     // r3 - left
 		// r4 - right
@@ -412,8 +427,8 @@ std::string ExpressionOperation::evaluateMul(Calculator::Driver& driver, unsigne
 		compiled << "JUMP @" << mulBeginLabel << "\n";
     compiled << mulEndLabel << ":\n";
 
-    driver.undeclare("_tmp_");
-		driver.undeclare("_mul_tmp");
+    driver.undeclare(tmpName);
+		driver.undeclare(mulTmpName);
 	}
 
 	return compiled.str();

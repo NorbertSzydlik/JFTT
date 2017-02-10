@@ -74,10 +74,12 @@ std::string CommandFor::compile(Calculator::Driver & driver) {
 	driver.declare(m_identifierName);
 	auto identifier = std::make_shared<Identifier>(m_identifierName);
 
-	compiled << "#begin of 'for' block\n";
+	compiled << "### begin of 'for' block\n";
 
 
   ExpressionPtr initialAssignExpression;
+
+
 	switch(m_operands)
 	{
 		case Operands::IDENTIFIER_IDENTIFIER:
@@ -93,6 +95,10 @@ std::string CommandFor::compile(Calculator::Driver & driver) {
 	}
   auto initialAssign = std::make_shared<CommandAssign>(identifier, initialAssignExpression);
 
+	auto tmpToIdentifierName = driver.getUniqueNameFor("tmpTo");
+	driver.declare(tmpToIdentifierName);
+	auto tmpToIdentifier = std::make_shared<Identifier>(tmpToIdentifierName);
+
   ConditionPtr condition;
 	switch(m_operands)
 	{
@@ -100,21 +106,21 @@ std::string CommandFor::compile(Calculator::Driver & driver) {
 		case Operands::NUMBER_IDENTIFIER:
 		  if(m_isDownFor)
 			{
-				compiled << "# WHILE " << m_identifierName << " > " << m_toIdentifier->getName() << " DO \n";
+				compiled << "# WHILE " << m_identifierName << " > " << tmpToIdentifier->getName() << " DO \n";
 				compiled << "# {commands}\n";
 				compiled << "#" << m_identifierName << " := " << m_identifierName << " - 1\n";
 				compiled << "# ENDWHILE \n";
 
-				condition = std::make_shared<Condition>(Condition::Type::OP_GE, identifier, m_toIdentifier);
+				condition = std::make_shared<Condition>(Condition::Type::OP_GT, identifier, tmpToIdentifier);
 			}
 			else
 			{
-				compiled << "# WHILE " <<  m_toIdentifier->getName() << " > " << m_identifierName << " DO \n";
+				compiled << "# WHILE " <<  tmpToIdentifier->getName() << " > " << m_identifierName << " DO \n";
 				compiled << "# {commands}\n";
 				compiled << "#" << m_identifierName << " := " << m_identifierName << " + 1\n";
 				compiled << "# ENDWHILE \n";
 
-				condition = std::make_shared<Condition>(Condition::Type::OP_GE, m_toIdentifier, identifier);
+				condition = std::make_shared<Condition>(Condition::Type::OP_GE, tmpToIdentifier, identifier);
 			}
 		break;
 		case Operands::IDENTIFIER_NUMBER:
@@ -126,7 +132,7 @@ std::string CommandFor::compile(Calculator::Driver & driver) {
 				compiled << "#" << m_identifierName << " := " << m_identifierName << " - 1\n";
 				compiled << "# ENDWHILE \n";
 
-				condition = std::make_shared<Condition>(Condition::Type::OP_GE, identifier, m_toNumber);
+				condition = std::make_shared<Condition>(Condition::Type::OP_GT, identifier, m_toNumber);
 			}
 			else
 			{
@@ -147,11 +153,28 @@ std::string CommandFor::compile(Calculator::Driver & driver) {
 	auto whileCmd = std::make_shared<CommandWhile>(condition, commands);
 
   compiled << initialAssign->compile(driver);
-	compiled << whileCmd->compile(driver);
 
-	compiled << "#end of 'for' block\n";
+	if(m_operands == Operands::IDENTIFIER_IDENTIFIER || m_operands == Operands::NUMBER_IDENTIFIER)
+	{
+		auto initialAssignTmpToIdentifier = std::make_shared<CommandAssign>(tmpToIdentifier, std::make_shared<ExpressionIdentifier>(m_toIdentifier));
+		compiled << "# copy to identifier to tmp identifier\n";
+		compiled << initialAssignTmpToIdentifier->compile(driver);
+	}
+
+	compiled << whileCmd->compile(driver);
+	if(m_isDownFor)
+	{
+		for(auto& cmd : commands)
+		{
+			compiled << cmd->compile(driver);
+		}
+	}
+
+	compiled << "### end of 'for' block\n";
 
 	driver.undeclare(m_identifierName);
+	driver.undeclare(tmpToIdentifierName);
+
 	return compiled.str();
 }
 

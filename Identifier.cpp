@@ -29,8 +29,10 @@ const std::string Identifier::getName() {
 
 const std::string Identifier::loadToRegister(Calculator::Driver & driver, unsigned int registerNumber)
 {
+	assert(registerNumber != 2);
 	std::ostringstream compiled;
-	compiled << loadPositionToRegister(driver, ADDRESS_REGISTER);
+	compiled << loadPositionToRegister(driver, 2);
+	compiled << "COPY %r2\n";
 	compiled << "LOAD %r" << registerNumber << " #load value from memory pointed by address register\n";
 
 	return compiled.str();
@@ -46,7 +48,7 @@ const std::string Identifier::loadPositionToRegister(Calculator::Driver & driver
 		compiled << "SET %r" << registerNumber << " " << position << " #memory position of identifier " << m_name << "\n";
 	}
 	else {
-		//assert(registerNumber != 0);
+		assert(registerNumber != ADDRESS_REGISTER);
 		position = driver.getDeclarationPosition(m_name);
 		auto offsetPosition = driver.getDeclarationPosition(m_offsetIdentifierName);
 

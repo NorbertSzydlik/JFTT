@@ -79,6 +79,14 @@ BEGIN
   ELSE
     WRITE 12;
   ENDIF
+
+  a := 0;
+  b := 0;
+  IF a > b THEN
+    WRITE 13;
+  ELSE
+    WRITE 14;
+  ENDIF
 END
 )DELIM";
 
@@ -94,7 +102,7 @@ END
   LOG("program out:\n" << programOutput.str() << "=====");
 
   REQUIRE(result > 0);
-  Fixture().checkOutput(programOutput, {1, 4, 5, 8, 9, 12});
+  Fixture().checkOutput(programOutput, {1, 4, 5, 8, 9, 12, 14});
 }
 
 TEST_CASE("test operators <= >= when elements not equal", "IfElse")

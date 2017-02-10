@@ -8,3 +8,8 @@ Usage
 =====
   compiler [input program] [output program]
 
+Tests
+=====
+Full program tests are located under `tests/test_WholePrograms.cpp`. Input is defined in `std::istringstream stdIn;` and expected output is defined in call to `Fixture().checkOutputStr`.
+
+

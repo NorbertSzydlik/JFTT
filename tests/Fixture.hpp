@@ -45,4 +45,27 @@ public:
 
     return true;
   }
+
+  bool checkOutputStr(std::ostringstream& programOutput, std::vector<std::string> expectedOutputs)
+  {
+    std::istringstream programOutputStream(programOutput.str());
+
+    std::string line;
+    std::vector<std::string> outputLines;
+
+    while (std::getline(programOutputStream, line)) {
+      outputLines.push_back(line);
+    }
+
+    REQUIRE(outputLines.size() == expectedOutputs.size());
+
+    auto currentOutputLine = std::begin(outputLines);
+    for(auto& expected : expectedOutputs )
+    {
+      CHECK(*currentOutputLine == expected);
+      ++currentOutputLine;
+    }
+
+    return true;
+  }
 };

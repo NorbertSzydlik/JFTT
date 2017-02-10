@@ -108,7 +108,7 @@ command: identifier OP_ASSIGN expression SEMICOLON { $$ = std::make_shared<Comma
 	| FOR PIDENTIFIER FROM NUMBER TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8);}
 	| FOR PIDENTIFIER FROM identifier TO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
 	| FOR PIDENTIFIER FROM NUMBER TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
-  | FOR PIDENTIFIER FROM identifier TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $6, $4, $8); }
+  | FOR PIDENTIFIER FROM identifier TO identifier DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8); }
 
 	| FOR PIDENTIFIER FROM NUMBER DOWNTO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8, true); }
 	| FOR PIDENTIFIER FROM identifier DOWNTO NUMBER DO commands ENDFOR { $$ = std::make_shared<CommandFor>($2, $4, $6, $8, true); }
